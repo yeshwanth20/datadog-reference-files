@@ -3621,6 +3621,654 @@ variable "custom_monitor_val" {
             au     = "CI116457340"
             eu     = "CI116457342"
             sg     = "CI116457344"
+          }
+
+          custom_monitor = [
+
+            {
+
+              enable_namespace_val = true
+
+              namespace_val        = {}
+
+              alert_name           = "Dcam Api Pod restarted"
+
+              query                = "max(last_8m):sum:kubernetes_state.container.restarts{kube_namespace:default AND (kube_container_name:dcam-api)} by {kube_namespace,kube_container_name} >= 2"
+
+              message              = "{{container.name}} restarted in dcam-api pod\n"
+
+              critical             = 2
+
+              critical_recovery    = 1
+
+              warning              = null
+
+              warning_recovery     = null
+
+              #priority             = 3
+
+              mon_priority         = {}
+
+              notify               = " "
+
+            }
+
+          ]
+
+        }        
+
+      ]
+
+    }
+
+  }
+
+}
+
+
+
+
+
+variable "log_monitors_val" {
+
+  description = "List of log monitors for all teams and their services"
+
+  type        = map(any)
+
+  default = {
+
+    team_2 = {
+
+      team_name = "TEAM_NAME_2"
+
+      services = [   
+
+        {
+
+          name = "fabric-api-v3"
+
+          tag_ciid = {
+
+            global = "CI40696181"
+
+            us     = "CI116457321"
+
+            au     = "CI116457324"
+
+            eu     = "CI116457326"
+
+            sg     = "CI116457328"       
+
+          }
+
+          log_monitor = [
+
+            {
+
+              alert_name        = "fabric-api-v3 Interrupted connection getting response for future"
+
+              query             = "logs(\"service:fabric-api-v3 status:error \\\"Unknown while calling\\\"\").index(\"*\").rollup(\"count\").last(\"5m\") > 5"
+
+              message           = "**\n\n**Env: {{log.tags.env_}}** \n\n**Monitor Alert Message:**\n\n Interrupted connection getting response for future is triggered for {{log.service}} in {{kube_cluster_name.name}} \n Validate in logs which service is being called and test connection \n**Possible Resolution Steps:**\n\n \n**"
+
+              critical          = 5
+
+              critical_recovery = 4.9
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 1
+
+              notify            = " "
+
+            },
+
+            {
+
+              alert_name        = "fabric-api-v3 Cannot connect getting response for future"
+
+              query             = "logs(\"service:fabric-api-v3 status:error \\\"Unable to connect to\\\"\").index(\"*\").rollup(\"count\").last(\"5m\") > 5"
+
+              message           = "**\n\n**Env: {{log.tags.env_}}** \n\n**Monitor Alert Message:**\n\n Cannot connect getting response for future is triggered for {{log.service}} in {{kube_cluster_name.name}} \n Validate in logs which service is being called and test connection \n**Possible Resolution Steps:**\n\n \n**"
+
+              critical          = 5
+
+              critical_recovery = 4.9
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 1
+
+              notify            = " "
+
+            },
+
+            {
+
+              alert_name        = "fabric-api-v3 Cannot upload files before containers are provisioned"
+
+              query             = "logs(\"service:fabric-api-v3 status:error \\\"container not provisioned for file upload\\\"\").index(\"*\").rollup(\"count\").last(\"5m\") > 5"
+
+              message           = "**\n\n**Env: {{log.tags.env_}}** \n\n**Monitor Alert Message:**\n\n Cannot upload files before containers are provisioned is triggered for {{log.service}} in {{kube_cluster_name.name}} \n Validate in logs which service is being called and test connection \n**Possible Resolution Steps:**\n\n \n Check if the database is up \n**"
+
+              critical          = 5
+
+              critical_recovery = 4.9
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 1
+
+              notify            = " "
+
+            }
+
+          ]
+
+        },
+
+        {
+
+          name = "workspace-service"
+
+          tag_ciid = {
+
+            global = ""
+
+            us     = "CI116457421"
+
+            au     = "CI41101427"
+
+
+
+            eu     = "CI41101419"
+
+            sg     = "CI58685029"
+
+          }
+
+          log_monitor = [
+
+            {
+
+              alert_name        = "Workspace-service Interrupted connection getting response for future"
+
+              query             = "logs(\"service:workspace-service status:error \\\"Unknown while calling\\\"\").index(\"*\").rollup(\"count\").last(\"5m\") > 5"
+
+              message           = "{service.name} Interrupted connection getting response for future is triggered for {{log.service}} in {{kube_cluster_name.name}} \n Validate in logs which service is being called and test connection \n "
+
+              critical          = 5
+
+              critical_recovery = 4.9
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 1
+
+              notify            = " "
+
+            },
+
+            {
+
+              alert_name        = "Workspace-service Autz failure"
+
+              query             = "logs(\"service:workspace-service status:error \\\"Errno\\\"\").index(\"*\").rollup(\"count\").last(\"2m\") > 3"
+
+              message           = "{service.name} Autz failure is triggered for {{log.service}} in {{kube_cluster_name.name}} \n Validate user credentials if it's exist \n"
+
+              critical          = 3
+
+              critical_recovery = 2.9
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 1
+
+              notify            = " "
+
+            },
+
+            {
+
+              alert_name        = "Workspace-service Unable to Create Workspace"
+
+              query             = "logs(\"service:workspace-service status:error \\\"com.pwc.base.exceptions.PwcBaseException\\\"\").index(\"*\").rollup(\"count\").last(\"5m\") > 3"
+
+              message           = "{service.name} Unable to Create Workspace is triggered for {{log.service}} in {{kube_cluster_name.name}} \n Check the logs for reason of unable to create workspace. exc(invalid workspace name, special character)\n "
+
+              critical          = 3
+
+              critical_recovery = 2.9
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 1
+
+              notify            = " "
+
+            },
+
+            {
+
+              alert_name        = "Workspace-service Unable to get Workspace information"
+
+              query             = "logs(\"service:workspace-service status:error \\\"unable to find workspace\\\"\").index(\"*\").rollup(\"count\").last(\"5m\") > 10"
+
+              message           = " {service.name} Unable to get Workspace information is triggered for {{log.service}} in {{kube_cluster_name.name}} \n validate if workspace has been created  or exist \n"
+
+              critical          = 10
+
+              critical_recovery = 9
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 1
+
+              notify            = " "
+
+            },
+
+            {
+
+              alert_name        = "Workspace-service Unable to delete Workspace"
+
+              query             = "logs(\"service:workspace-service status:error \\\"org.springframework.core.convert.ConversionFailedException\\\"\").index(\"*\").rollup(\"count\").last(\"10m\") > 3"
+
+              message           = "{service.name} Unable to delete Workspace is triggered for {{log.service}} in {{kube_cluster_name.name}} \n check on the logs for reason to unable to delete the workspace. ex(invalid workspace name)\n"
+
+              critical          = 3
+
+              critical_recovery = 2.9
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 1
+
+              notify            = " "
+
+            },
+
+            {
+
+              alert_name        = "Workspace-service Unable to connect to Cosmos DB"
+
+              query             = "logs(\"service:workspace-service status:error \\\"Connection failed\\\"\").index(\"*\").rollup(\"count\").last(\"5m\") > 0"
+
+              message           = "{service.name} Unable to connect to Cosmos DB is triggered for {{log.service}} in {{kube_cluster_name.name}} \n check on the logs for reason connection failed. ex(credentials, invalid DB information) \n"
+
+              critical          = 0
+
+              critical_recovery = 0
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 1
+
+              notify            = " "
+
+            },
+
+            {
+
+              alert_name        = "Workspace-service Unable to update workspace user"
+
+              query             = "logs(\"service:workspace-service status:error \\\"Error dropping the message\\\"\").index(\"*\").rollup(\"count\").last(\"5m\") > 3"
+
+              message           = "{service.name} Unable to update workspace user is triggered for {{log.service}} in {{kube_cluster_name.name}} \n Validate if user existand is using correct credentials \n"
+
+              critical          = 3
+
+              critical_recovery = 2.9
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 1
+
+              notify            = " "
+
+            },
+
+            {
+
+              alert_name        = "Workspace-service Unable to get workspace users"
+
+              query             = "logs(\"service:workspace-service status:error \\\"unable to get results from Azure Search\\\"\").index(\"*\").rollup(\"count\").last(\"5m\") > 3"
+
+              message           = "{service.name} Unable to get workspace users is triggered for {{log.service}} in {{kube_cluster_name.name}} \n Validate if user existand is using correct credentials \n"
+
+              critical          = 3
+
+              critical_recovery = 2.9
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 1
+
+              notify            = " "
+
+            }
+
+          ]
+
+        },
+
+        {
+
+          name = "engagement-service-v2"
+
+          tag_ciid = {
+
+            global = "CI116457441"
+
+            us     = "CI116457313"
+
+            au     = "CI116457315"
+
+            eu     = "CI116457317"
+
+            sg     = "CI116457319"
+
+          }
+
+          log_monitor = [
+
+            {
+
+              alert_name        = "engagement-service-v2 Postgres connection failure"
+
+              query             = "logs(\"service:engagement-service-v2 status:error @error.kind:(JDBCConnectionException)\").index(\"*\").rollup(\"count\").last(\"5m\") > 0"
+
+              message           = "**\n\n**Env: {{log.tags.env_}}** \n\n**pwc_territory: {{log.tags.pwc_territory_}}**\n\n**Monitor Alert Message:**\n\n Postgres connection failure alert is triggered for {{log.service}} in {{kube_cluster_name.name}} \n**Possible Resolution Steps:**\n\n Validate credentials used for connecting to postgres\n Check if the database is up \n**"
+
+              critical          = 0
+
+              critical_recovery = 0
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 2
+
+              notify            = " "
+
+            },
+
+            {
+
+              alert_name        = "engagement-service-v2 Unable to authorize the user"
+
+              query             = "logs(\"service:engagement-service-v2 status:error \\\"does not have access to the service\\\"\").index(\"*\").rollup(\"count\").last(\"1m\") > 50"
+
+              message           = "**\n\n**Env: {{log.tags.env_}}** \n\n**pwc_territory: {{log.tags.pwc_territory_}}**\n\n**Monitor Alert Message:**\n\n Unable to authorize the user alert is triggered for {{log.service}} in {{kube_cluster_name.name}} \n**Possible Resolution Steps:**\n\n run the job User_Access_To_Autz_Services_Deploy to give user access\n**"
+
+              critical          = 50
+
+              critical_recovery = 49
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 2
+
+              notify            = " "
+
+            },
+
+            {
+
+              alert_name        = "engagement-service-v2 Request for non-existent resource"
+
+              query             = "logs(\"service:engagement-service-v2 status:error \\\"No Resources found for\\\"\").index(\"*\").rollup(\"count\").last(\"5m\") > 50"
+
+              message           = "**\n\n**Env: {{log.tags.env_}}** \n\n**pwc_territory: {{log.tags.pwc_territory_}}**\n\n**Monitor Alert Message:**\n\n Request for non-existent resource alert is triggered for {{log.service}} in {{kube_cluster_name.name}} \n**Possible Resolution Steps:**\n\n Need to manually examine logs to determine a potential problem \n**"
+
+              critical          = 50
+
+              critical_recovery = 49
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 2
+
+              notify            = " "
+
+            },
+
+
+
+          ]
+
+        },
+
+        {
+
+          name = "generic-kafka-producer"
+
+          tag_ciid = {
+
+            global = "CI40696181"
+
+            us = "CI116457330"
+
+            au = "CI116457332"
+
+            eu = "CI116457334"
+
+            sg = "CI116457336"        
+
+          }
+
+          log_monitor = [
+
+            {
+
+              alert_name        = "generic-kafka-producer No active Kafka Nodes Instances found"
+
+              query             = "logs(\"service:generic-kafka-producer status:error \\\"There are no Kafka Brokers UP for Cluster\\\"\").index(\"*\").rollup(\"count\").last(\"2m\") > 0"
+
+              message           = "**\n\n**Env: {{log.tags.env_}}** \n\n**pwc_territory: {{log.tags.pwc_territory_}}**\n\n**Monitor Alert Message:**\n\n No active Kafka Nodes Instances found alert is triggered for {{log.service}} in {{kube_cluster_name.name}} \n\n**Possible Resolution Steps:**\n\n Check if kafka cluster is up and healthy\n Check the KAFKA_BOOTSTRAP_SERVERS property to get the instances and verify they are up and running \n**"
+
+              critical          = 0
+
+              critical_recovery = 0
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 4
+
+              notify            = " "
+
+            },
+
+            {
+
+              alert_name        = "generic-kafka-producer Kafka connect Timeout"
+
+              query             = "logs(\"service:generic-kafka-producer status:error \\\"service is taking more than\\\"\").index(\"*\").rollup(\"count\").last(\"2m\") > 0"
+
+              message           = "**\n\n**Env: {{log.tags.env_}}** \n\n**pwc_territory: {{log.tags.pwc_territory_}}**\n\n**Monitor Alert Message:**\n\n Kafka connect Timeout alert is triggered for {{log.service}} in {{kube_cluster_name.name}} \n\n**Possible Resolution Steps:**\n\n Validate credentials used for connecting to Kafka Cluster \n**"
+
+              critical          = 0
+
+              critical_recovery = 0
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 4
+
+              notify            = " "
+
+            },
+
+            {
+
+              alert_name        = "generic-kafka-producer Kafka Failed Server Error"
+
+              query             = "logs(\"service:generic-kafka-producer status:error \\\"unable to connect to kafka\\\"\").index(\"*\").rollup(\"count\").last(\"2m\") > 0"
+
+              message           = "**\n\n**Env: {{log.tags.env_}}** \n\n**pwc_territory: {{log.tags.pwc_territory_}}**\n\n**Monitor Alert Message:**\n\n Kafka Failed Server Error alert is triggered for {{log.service}} in {{kube_cluster_name.name}} \n\n**Possible Resolution Steps:**\n\n Validate credentials used for connecting to Kafka Cluster\n Check the KAFKA_BOOTSTRAP_SERVERS property to get the instances and verify they are up and running \n**"
+
+              critical          = 0
+
+              critical_recovery = 0
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 4
+
+              notify            = " "
+
+            },
+
+            {
+
+              alert_name        = "generic-kafka-producer Kafka unable to drop message in kafka with Topic"
+
+              query             = "logs(\"service:generic-kafka-producer status:error \\\"unable to drop message in kafka Topic\\\"\").index(\"*\").rollup(\"count\").last(\"2m\") > 5"
+
+              message           = "**\n\n**Env: {{log.tags.env_}}** \n\n**pwc_territory: {{log.tags.pwc_territory_}}**\n\n**Monitor Alert Message:**\n\n Kafka unable to drop message in kafka with Topic alert is triggered for {{log.service}} in {{kube_cluster_name.name}} \n\n**Possible Resolution Steps:**\n\n Need to manually examine logs to determine a potential problem in callers message resulting in failure \n**"
+
+              critical          = 5
+
+              critical_recovery = 4.9
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 4
+
+              notify            = " "
+
+            },
+
+            {
+
+              alert_name        = "generic-kafka-producer Error Dropping Message"
+
+              query             = "logs(\"service:generic-kafka-producer status:error \\\"failed dropping a message into the kafka topic\\\"\").index(\"*\").rollup(\"count\").last(\"2m\") > 5"
+
+              message           = "**\n\n**Env: {{log.tags.env_}}** \n\n**pwc_territory: {{log.tags.pwc_territory_}}**\n\n**Monitor Alert Message:**\n\n Error Dropping Message alert is triggered for {{log.service}} in {{kube_cluster_name.name}} \n\n**Possible Resolution Steps:**\n\n Need to manually examine logs to determine a potential problem in callers message resulting in failure \n**"
+
+              critical          = 5
+
+              critical_recovery = 4.9
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 4
+
+              notify            = " "
+
+            },
+
+          ]
+
+        },
+
+        {
+
+          name = "ms-teams-wrapper"
+
+          tag_ciid = {
+
+            global = "CI116457421"
+
+            us     = "CI116457421"
+
+            au     = "CI41101427"
+
+            eu     = "CI41101419"
+
+            sg     = "CI58685029"
+
+          }
+
+          log_monitor = [         
+
+            {
+
+              alert_name        = "MS Teams Pod error"
+
+              query             = "logs(\"service:ms-teams-wrapper \\\"Timed out MetadataRequest in flight\\\"\").index(\"*\").rollup(\"count\").by(\"env\").last(\"5m\") > 1"
+
+              message           = "MS Teams Pod error in **\n\n**Env: {{log.tags.env_}}**. Please restart the faulty pod. Cluster:{{cluster_name.name}}  POD:{{pod_name.name}}"
+
+              critical          = 1
+
+              critical_recovery = 0.9
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 2
+
+              notify            = " "
+
+            },
+
+            {
+
+              alert_name        = "MS Teams Application maximum poll interval"
+
+              query             = "logs(\"service:ms-teams-wrapper \\\"Application maximum poll interval\\\"\").index(\"*\").rollup(\"count\").by(\"env\").last(\"5m\") > 1"
+
+              message           = "MS Teams Application maximum poll interval in **\n\n**Env: {{log.tags.env_}}**. Please restart the service. Cluster:{{cluster_name.name}}  POD:{{pod_name.name}}"
+
+              critical          = 1
+
+              critical_recovery = 0.9
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 2
+
+              notify            = " "
+
+            }
+
+          ]
+
+
+
 
 
 
