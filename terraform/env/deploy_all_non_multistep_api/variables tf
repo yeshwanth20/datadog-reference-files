@@ -1,0 +1,2489 @@
+variable "default_tags" {
+  default = [
+    "value_stream:data_platform",
+    "managed_by:terraform",
+  ]
+}
+
+variable "default_tags_synthetic_ssl" {
+  default = [
+    "pwc_severity:3",
+    "pwc_target_persona:business,product_owner",
+  ]
+}
+
+variable "default_tags_kube_cluster" {
+  default = [
+    "pwc_integration:splunk",
+    "pwc_severity:3",
+    "service:kubernetes",
+  ]
+}
+
+variable "team_names" {
+  default = {
+    TEAM_NAME_1 = "Orca",
+    TEAM_NAME_2 = "Blue_Whales",
+    TEAM_NAME_3 = "Sea_Lions",
+    TEAM_NAME_4 = "Dolphins",
+    TEAM_NAME_6 = "Captain_America",
+  }
+}
+
+#kube_monitors variable defines a list of monitoring alerts for Kubernetes clusters.
+#Each object in the list specifies the conditions for triggering a metric alert and the message to be sent when triggered.
+#The alerts include checks for pods being restarted too often, unschedulable nodes, failed pods, replicas being down, and pods being in a state of ImagePullBackOff or CrashloopBackOff.
+
+variable "team_kube_monitors" {
+  type = any
+  default = {
+      team_1 = {
+        team_name = "TEAM_NAME_2"
+        metrics_type = [
+          {
+            metrics_name = "service"
+            metrics_detail = [
+              {
+                tag_ciid = {
+                    global = ""
+                    us     = ""
+                    au     = ""
+                    eu     = ""
+                    sg     = ""
+                }
+                alert_name        = "Kubernetes Memory Usage above threshold"
+                critical          = 0.8
+                critical_recovery = 0.7
+                message           = "Kubernetes Memory Usage above threshold 80, memory is almost full. {{kube_namespace.name}} {{kube_cluster_name}}"
+                recovery_message = " Kubernetes Memory Usage above threshold recovered "
+                notify = " "
+                #priority          = 3
+                mon_priority      = {}
+                namespace         = null
+                query             = "avg(last_15m):avg:kubernetes.memory.usage_pct{kube_namespace:default AND (kube_deployment:ldap-admin-service OR kube_deployment:directory-service OR kube_deployment:fabric-api-v3 OR kube_deployment:workspace-exp OR kube_deployment:workspace-exp OR kube_deployment:ms-teams-wrapper OR kube_deployment:workspace-asset-mgmt OR kube_deployment:azure-storage-service OR kube_deployment:engagement-service-v2 OR kube_deployment:django-engagement-admin)} by {kube_cluster_name} > 0.8"
+              },
+
+              {
+                  tag_ciid = {
+                    global = ""
+                    us     = ""
+                    au     = ""
+                    eu     = ""
+                    sg     = ""
+                }
+                alert_name        = "Deployments Replica Pods"
+                critical          = 1
+                critical_recovery = 0.9
+                message           = "More than one Deployments Replica's pods are down in Deployment {{kube_namespace.name}}/{{kube_deployment.name}}."
+                recovery_message = " Deployments Replica Pods recovered "
+                notify = " "
+                #priority          = 3
+                mon_priority      = {}
+                namespace         = null
+                query             = "avg(last_15m):avg:kubernetes_state.deployment.replicas_desired{kube_namespace:default AND (kube_deployment:ldap-admin-service OR kube_deployment:directory-service OR kube_deployment:fabric-api-v3 OR kube_deployment:workspace-exp OR kube_deployment:workspace-exp OR kube_deployment:ms-teams-wrapper OR kube_deployment:workspace-asset-mgmt OR kube_deployment:azure-storage-service OR kube_deployment:engagement-service-v2 OR kube_deployment:django-engagement-admin )} by {kube_namespace,kube_deployment} - avg:kubernetes_state.deployment.replicas_available{kube_namespace:default AND (kube_deployment:ldap-admin-service OR kube_deployment:directory-service OR kube_deployment:fabric-api-v3 OR kube_deployment:workspace-exp OR kube_deployment:workspace-exp OR kube_deployment:ms-teams-wrapper OR kube_deployment:workspace-asset-mgmt OR kube_deployment:azure-storage-service OR kube_deployment:engagement-service-v2 OR kube_deployment:django-engagement-admin )} by {kube_namespace,kube_deployment} >= 1"
+              },
+            ]
+          },            
+          {
+            metrics_name = "nifi"
+            metrics_detail = [
+              {
+                tag_ciid = {
+                    global = ""
+                    us     = ""
+                    au     = ""
+                    eu     = ""
+                    sg     = ""
+                }                 
+              
+                  alert_name        = "Statefulset Replicas"
+                  type              = "metric alert"
+                  critical          = 2
+                  critical_recovery = 1
+                  message           = "More than one Statefulset Replica's pods are down in Statefulset {{kube_namespace.name}}/{{kube_stateful_set.name}}. This might present an unsafe situation for any further manual operations, such as killing other pods."
+                  recovery_message = "Statefulset Replicas recovered."
+                  notify = " "
+                  #priority          = 3
+                  mon_priority      = {}
+                  query             = "max(last_15m):sum:kubernetes_state.statefulset.replicas_desired{kube_cluster_name:default AND (kube_namespace:aad-management* Or kube_namespace:workspace-migration* Or kube_namespace:workspace-management* Or kube_namespace:aad-hygiene* )} by {kube_namespace,kube_stateful_set} - sum:kubernetes_state.statefulset.replicas_ready{kube_cluster_name:default AND (kube_namespace:aad-management* Or kube_namespace:workspace-migration* Or kube_namespace:workspace-management* Or kube_namespace:aad-hygiene* )} by {kube_namespace,kube_stateful_set} >= 2"
+              }   
+            ]
+          }
+        ]
+      },
+    team_2 = {
+      team_name = "TEAM_NAME_4"
+      metrics_type = [
+        {
+          metrics_name = "service"
+          metrics_detail = [
+            {
+                tag_ciid = {
+                  global = ""
+                  us     = ""
+                  au     = ""
+                  eu     = ""
+                  sg     = ""
+              }
+              alert_name        = "Kubernetes Memory Usage above threshold"
+              critical          = 0.8
+              critical_recovery = 0.7
+              message           = "Kubernetes Memory Usage above threshold 80, memory is almost full. {{kube_namespace.name}} {{kube_cluster_name}}"
+              recovery_message = " Kubernetes Memory Usage above threshold recovered "
+              notify = " "
+              #priority          = 3
+              mon_priority      = {}
+              namespace         = null
+              query             = "avg(last_15m):avg:kubernetes.memory.usage_pct{kube_namespace:default AND (kube_deployment:workbench-service* OR kube_deployment:service-definitions OR kube_deployment:authz OR kube_deployment:autz-service OR kube_deployment:kv-store OR kube_deployment:preference-service* OR kube_deployment:dp-approval-service OR kube_deployment:directory-service OR kube_deployment:dp-idbroker OR kube_deployment:wbservices-api OR kube_deployment: alteryx-macros)} by {kube_cluster_name} > 0.8"
+            },
+            {
+              tag_ciid = {
+                global = ""
+                us     = ""
+                au     = ""
+                eu     = ""
+                sg     = ""
+              }
+              alert_name        = "Pod restart in cluster greater than 3"
+              critical          = 3
+              critical_recovery = 2
+              message           = "{{kube_deployment.name}} {{pod_name.name}} {{kube_cluster_name.name}}. cluster pod is restarted more than >= {{threshold}} "
+              recovery_message = "{{kube_deployment.name}} {{pod_name.name}} {{kube_cluster_name.name}} cluster pod restarted Alert Solved."
+              notify = " "
+              #priority          = 3
+              mon_priority      = {}
+              namespace         = null
+              query = "events(\"source:kubernetes AND restarting AND kube_namespace:default AND pod_name:(workbench-service* OR service-definitions* OR authz* OR autz-service* OR kv-store* OR preference-service* OR dp-approval-service* OR directory-service* OR dp-idbroker* OR wbservices-api* OR  alteryx-macros*)\").rollup(\"cardinality\", \"pod_name\").by(\"pod_name,kube_cluster_name\").last(\"15m\") >= 3"
+            },
+            {
+            tag_ciid = {
+                global = ""
+                us     = ""
+                au     = ""
+                eu     = ""
+                sg     = ""
+            }
+            alert_name        = "Deployments Replica Pods"
+            critical          = 2
+            critical_recovery = 1
+            message           = "More than one Deployments Replica's pods are down in Deployment {{kube_namespace.name}}/{{kube_deployment.name}}."
+            recovery_message = " Deployments Replica Pods recovered "
+            notify = " "
+            #priority          = 3
+            mon_priority      = {}
+            namespace         = null
+            query             = "avg(last_15m):avg:kubernetes_state.deployment.replicas_desired{kube_namespace:default AND (kube_deployment:workbench-service* OR kube_deployment:service-definitions OR kube_deployment:authz OR kube_deployment:autz-service OR kube_deployment:kv-store OR kube_deployment:preference-service* OR kube_deployment:dp-approval-service OR kube_deployment:directory-service OR kube_deployment:dp-idbroker OR kube_deployment:wbservices-api OR kube_deployment: alteryx-macros) } by {kube_namespace,kube_deployment} - avg:kubernetes_state.deployment.replicas_available{kube_namespace:default AND (kube_deployment:workbench-service* OR kube_deployment:service-definitions OR kube_deployment:authz OR kube_deployment:autz-service OR kube_deployment:kv-store OR kube_deployment:preference-service* OR kube_deployment:dp-approval-service OR kube_deployment:directory-service OR kube_deployment:dp-idbroker OR kube_deployment:wbservices-api OR kube_deployment: alteryx-macros)} by {kube_namespace,kube_deployment} >= 2"
+
+            },
+            {
+              tag_ciid = {
+                global = ""
+                us     = ""
+                au     = ""
+                eu     = ""
+                sg     = ""
+              }
+              alert_name        = "Dcam-Api Kubernetes Memory Usage above threshold"
+              critical          = 0.8
+              critical_recovery = 0.7
+              message           = "Dcam-Api pod memory usage above 80% threshold. {{kube_namespace.name}} {{kube_cluster_name}}"
+              recovery_message  = "Dcam-Api pod memory usage has recovered below threshold."              
+              notify = " "
+              #priority          = 3
+              mon_priority      = {}
+              namespace         = null
+              query             = "max(last_15m):max:kubernetes.memory.usage_pct{kube_deployment:dcam-api AND (kube_namespace:dp-services-us-prod OR kube_namespace:dp-services-eu-prod OR kube_namespace:dataplatform-au-prod OR kube_namespace:dp-services-sg-prod)} by {pod_name} > 0.8"
+            }                      
+          ]
+        },
+      ]
+    },
+    
+    team_3 = {
+      team_name = "TEAM_NAME_3"
+      metrics_type = [
+        {
+          metrics_name = "service"
+          metrics_detail = [
+            {
+              tag_ciid = {
+                global = ""
+                us     = ""
+                au     = ""
+                eu     = ""
+                sg     = ""
+              }
+              alert_name        = "Kubernetes Memory Usage above threshold"
+              critical          = 0.8
+              critical_recovery = 0.7
+              message           = "Kubernetes Memory Usage above threshold 80, memory is almost full. {{kube_namespace.name}} {{kube_cluster_name}}"
+              recovery_message = " Kubernetes Memory Usage above threshold recovered "
+              notify = " "
+              notify_non_prod   = "@teams-Sea_Lions_Non_Prod_Alerts_Channel"
+              notify_prod       = "@teams-Sea_Lions_Prod_Alerts_Channel"
+              #priority          = 3
+              mon_priority      = {}
+              namespace = {
+                dev = ""
+                qa  = ""
+                us_stg = "dp-mfe-us-stage"
+                eu_stg = "dp-mfe-eu-stage"
+                us_prod = "dp-mfe-us-prod"
+                eu_prod = "dp-mfe-eu-prod"
+                au_prod = "dp-mfe-au-prod"
+                sg_prod = "dp-mfe-sg-prod"
+              }
+              query             = "avg(last_15m):avg:kubernetes.memory.usage_pct{ kube_namespace:default AND (kube_deployment: workbench-ng-analytics OR kube_deployment: workbench-ng-app-configuration OR kube_deployment: workbench-ng-authorization OR kube_deployment: workbench-ng-content OR kube_deployment: workbench-ng-gallery OR kube_deployment: workbench-ng-microfrontends OR kube_deployment: workbench-ng-pages OR kube_deployment: workbench-ng-sites OR kube_deployment: workbench-ng-user-directory OR kube_deployment: workbench-ng-workspace-context-adapter OR kube_deployment: wb-mydata-api )} by {kube_cluster_name} > 0.8"
+            },
+            {
+              tag_ciid = {
+                global = ""
+                us     = ""
+                au     = ""
+                eu     = ""
+                sg     = ""
+              }
+              alert_name        = "Pod restart in cluster greater than 3"
+              critical          = 3
+              critical_recovery = 2
+              message           = "{{kube_deployment.name}} {{pod_name.name}} {{kube_cluster_name.name}}. cluster pod is restarted more than >= {{threshold}} "
+              recovery_message = "{{kube_deployment.name}} {{pod_name.name}} {{kube_cluster_name.name}} cluster pod restarted Alert Solved."
+              notify = " "
+              notify_non_prod   = "@teams-Sea_Lions_Non_Prod_Alerts_Channel"
+              notify_prod       = "@teams-Sea_Lions_Prod_Alerts_Channel"
+              #priority          = 3
+              mon_priority      = {}
+              namespace = {   
+                dev = ""
+                qa  = ""
+                us_stg = "dp-mfe-us-stage"
+                eu_stg = "dp-mfe-eu-stage"
+                us_prod = "dp-mfe-us-prod"
+                eu_prod = "dp-mfe-eu-prod"
+                au_prod = "dp-mfe-au-prod"
+                sg_prod = "dp-mfe-sg-prod"
+              }
+              query = "events(\"source:kubernetes AND restarting AND kube_namespace:default AND pod_name:(workbench-ng-analytics* OR workbench-ng-app-configuration* OR workbench-ng-authorization* OR workbench-ng-content* OR workbench-ng-gallery* OR workbench-ng-microfrontends* OR workbench-ng-pages* OR workbench-ng-sites* OR workbench-ng-user-directory* OR workbench-ng-workspace-context-adapter* OR wb-mydata-api*)\").rollup(\"cardinality\", \"pod_name\").by(\"pod_name,kube_cluster_name\").last(\"15m\") >= 3"
+            },
+            {
+              tag_ciid = {
+                global = ""
+                us     = ""
+                au     = ""
+                eu     = ""
+                sg     = ""
+              }
+              alert_name        = "Deployments Replica Pods"
+              critical          = 2
+              critical_recovery = 1
+              message           = "More than one Deployments Replica's pods are down in Deployment {{kube_namespace.name}}/{{kube_deployment.name}}."
+              recovery_message = " Deployments Replica Pods recovered "
+              notify = " "
+              notify_non_prod   = "@teams-Sea_Lions_Non_Prod_Alerts_Channel"
+              notify_prod       = "@teams-Sea_Lions_Prod_Alerts_Channel"
+              #priority          = 3
+              mon_priority      = {}
+              namespace = {   
+                dev = ""
+                qa  = ""
+                us_stg = "dp-mfe-us-stage"
+                eu_stg = "dp-mfe-eu-stage"
+                us_prod = "dp-mfe-us-prod"
+                eu_prod = "dp-mfe-eu-prod"
+                au_prod = "dp-mfe-au-prod"
+                sg_prod = "dp-mfe-sg-prod"
+              }
+              query             = "avg(last_15m):avg:kubernetes_state.deployment.replicas_desired{ kube_namespace:default AND (kube_deployment: workbench-ng-analytics OR kube_deployment: workbench-ng-app-configuration OR kube_deployment: workbench-ng-authorization OR kube_deployment: workbench-ng-content OR kube_deployment: workbench-ng-gallery OR kube_deployment: workbench-ng-microfrontends OR kube_deployment: workbench-ng-pages OR kube_deployment: workbench-ng-sites OR kube_deployment: workbench-ng-user-directory OR kube_deployment: workbench-ng-workspace-context-adapter OR kube_deployment: wb-mydata-api ) } by {kube_namespace,kube_deployment} - avg:kubernetes_state.deployment.replicas_available{ kube_namespace:default AND (kube_deployment: workbench-ng-analytics OR kube_deployment: workbench-ng-app-configuration OR kube_deployment: workbench-ng-authorization OR kube_deployment: workbench-ng-content OR kube_deployment: workbench-ng-gallery OR kube_deployment: workbench-ng-microfrontends OR kube_deployment: workbench-ng-pages OR kube_deployment: workbench-ng-sites OR kube_deployment: workbench-ng-user-directory OR kube_deployment: workbench-ng-workspace-context-adapter OR kube_deployment: wb-mydata-api )} by {kube_namespace,kube_deployment} >= 2"
+            },
+          ]
+        },
+      ]
+    },
+
+    team_4 = {
+      team_name = "TEAM_NAME_6"
+      metrics_type = [
+        {
+          metrics_name = "service"
+          metrics_detail = [
+            {
+              tag_ciid = {
+                global = ""
+                us     = ""
+                au     = ""
+                eu     = ""
+                sg     = ""
+              }
+              alert_name        = "Kubernetes Memory Usage above threshold"
+              critical          = 0.8
+              critical_recovery = 0.7
+              message           = "Kubernetes Memory Usage above threshold 80, memory is almost full. {{kube_namespace.name}} {{kube_cluster_name}}"
+              recovery_message = " Kubernetes Memory Usage above threshold recovered "
+              notify = " "
+              #priority          = 3
+              mon_priority      = {}
+              namespace         = null
+              query             = "avg(last_15m):avg:kubernetes.memory.usage_pct{kube_namespace:default AND (kube_deployment:catalogue-service-v3 OR kube_deployment:workspace-asset-mgmt* OR kube_deployment:catalogue-service OR kube_deployment:ldap-admin-service OR kube_deployment:adf-service OR kube_deployment:data-access-mgmt* OR kube_deployment:service-provisioning-api )} by {kube_cluster_name} > 0.8"
+            },
+            {
+              tag_ciid = {
+                global = ""
+                us     = ""
+                au     = ""
+                eu     = ""
+                sg     = ""
+              }
+              alert_name        = "Pod restart in cluster greater than 3"
+              critical          = 3
+              critical_recovery = 2
+              message           = "{{kube_deployment.name}} {{pod_name.name}} {{kube_cluster_name.name}}. cluster pod is restarted more than >= {{threshold}} "
+              recovery_message = "{{kube_deployment.name}} {{pod_name.name}} {{kube_cluster_name.name}} cluster pod restarted Alert Solved."
+              notify = " "
+              #priority          = 3
+              mon_priority      = {}
+              namespace         = null
+              query = "events(\"source:kubernetes AND restarting AND kube_namespace:default AND pod_name:(catalogue-service-v3* OR workspace-asset-mgmt* OR catalogue-service* OR ldap-admin-service* OR adf-service* OR data-access-mgmt* OR service-provisioning-api* )\").rollup(\"cardinality\", \"pod_name\").by(\"pod_name,kube_cluster_name\").last(\"15m\") >= 3"
+            },
+            {
+              tag_ciid = {
+                  global = ""
+                  us     = ""
+                  au     = ""
+                  eu     = ""
+                  sg     = ""
+              }
+              alert_name        = "Deployments Replica Pods"
+              critical          = 2
+              critical_recovery = 1
+              message           = "More than one Deployments Replica's pods are down in Deployment {{kube_namespace.name}}/{{kube_deployment.name}}."
+              recovery_message = " Deployments Replica Pods recovered "
+              notify = " "
+              #priority          = 3
+              mon_priority      = {}
+              namespace         = null
+              query             = "avg(last_15m):avg:kubernetes_state.deployment.replicas_desired{kube_namespace:default AND (kube_deployment:catalogue-service-v3 OR kube_deployment:workspace-asset-mgmt* OR kube_deployment:catalogue-service OR kube_deployment:ldap-admin-service OR kube_deployment:adf-service OR kube_deployment:data-access-mgmt* OR kube_deployment:service-provisioning-api ) } by {kube_namespace,kube_deployment} - avg:kubernetes_state.deployment.replicas_available{kube_namespace:default AND (kube_deployment:catalogue-service-v3 OR kube_deployment:workspace-asset-mgmt* OR kube_deployment:catalogue-service OR kube_deployment:ldap-admin-service OR kube_deployment:adf-service OR kube_deployment:data-access-mgmt* OR kube_deployment:service-provisioning-api )} by {kube_namespace,kube_deployment} >= 2"
+
+            },
+
+          ]
+        },
+      ],
+    },
+
+    team_5 = {
+          team_name = "TEAM_NAME_1"
+          metrics_type = [
+            {
+              metrics_name = "service"
+              metrics_detail = [
+              {
+                tag_ciid = {
+                    global = ""
+                    us     = ""
+                    au     = ""
+                    eu     = ""
+                    sg     = ""
+                }
+                alert_name        = "Kubernetes Memory Usage above threshold"
+                critical          = 0.8
+                critical_recovery = 0.7
+                message           = "Kubernetes Memory Usage above threshold 80, memory is almost full. {{kube_namespace.name}} {{kube_cluster_name}}"
+                recovery_message = " Kubernetes Memory Usage above threshold recovered "
+                notify = " "
+                #priority          = 3
+                mon_priority      = {}
+                namespace         = null
+                query             = "avg(last_15m):avg:kubernetes.memory.usage_pct{kube_namespace:default AND (kube_deployment:vizinsights OR kube_deployment:viz-cmd-api OR kube_deployment:viz-query-api OR kube_deployment:viz-asset-handler OR kube_deployment:viz-management-api OR kube_deployment:viz-activity-handler OR kube_deployment:viz-event-store-feed OR kube_deployment:viz-workspace-handler OR kube_deployment:viz-notification-handler OR kube_deployment:viz-event-store-feed OR kube_deployment:tableau-service OR kube_deployment:powerbi-service OR kube_deployment:kube-utility-service)} by {kube_cluster_name} > 0.8"
+              },
+              {
+                tag_ciid = {
+                  global = ""
+                  us     = ""
+                  au     = ""
+                  eu     = ""
+                  sg     = ""
+                }
+                alert_name        = "Pod restart in cluster greater than 3"
+                critical          = 3
+                critical_recovery = 2
+                message           = "{{kube_deployment.name}} {{pod_name.name}} {{kube_cluster_name.name}}. cluster pod is restarted more than >= {{threshold}} "
+                recovery_message = "{{kube_deployment.name}} {{pod_name.name}} {{kube_cluster_name.name}} cluster pod restarted Alert Solved."
+                notify = " "
+                #priority          = 3
+                mon_priority      = {}
+                namespace         = null
+                query = "events(\"source:kubernetes AND restarting AND kube_namespace:default AND pod_name:(vizinsights* OR viz-cmd-api* OR viz-query-api* OR viz-asset-handler* OR viz-management-api* OR viz-activity-handler* OR viz-event-store-feed* OR viz-workspace-handler* OR viz-notification-handler* OR viz-event-store-feed* OR tableau-service* OR powerbi-service* OR kube-utility-service*)\").rollup(\"cardinality\", \"pod_name\").by(\"pod_name,kube_cluster_name\").last(\"15m\") >= 3"
+              },
+              {
+                tag_ciid = {
+                    global = ""
+                    us     = ""
+                    au     = ""
+                    eu     = ""
+                    sg     = ""
+                }
+                alert_name        = "Deployments Replica Pods"
+                critical          = 2
+                critical_recovery = 1
+                message           = "More than one Deployments Replica's pods are down in Deployment {{kube_namespace.name}}/{{kube_deployment.name}}."
+                recovery_message = " Deployments Replica Pods recovered "
+                notify = " "
+                #priority          = 3
+                mon_priority      = {}
+                namespace         = null
+                query             = "avg(last_15m):avg:kubernetes_state.deployment.replicas_desired{kube_namespace:default AND (kube_deployment:vizinsights OR kube_deployment:viz-cmd-api OR kube_deployment:viz-query-api OR kube_deployment:viz-asset-handler OR kube_deployment:viz-management-api OR kube_deployment:viz-activity-handler OR kube_deployment:viz-event-store-feed OR kube_deployment:viz-workspace-handler OR kube_deployment:viz-notification-handler OR kube_deployment:viz-event-store-feed OR kube_deployment:tableau-service OR kube_deployment:powerbi-service OR kube_deployment:kube-utility-service)} by {kube_namespace,kube_deployment} - avg:kubernetes_state.deployment.replicas_available{kube_namespace:default AND (kube_deployment:vizinsights OR kube_deployment:viz-cmd-api OR kube_deployment:viz-query-api OR kube_deployment:viz-asset-handler OR kube_deployment:viz-management-api OR kube_deployment:viz-activity-handler OR kube_deployment:viz-event-store-feed OR kube_deployment:viz-workspace-handler OR kube_deployment:viz-notification-handler OR kube_deployment:viz-event-store-feed OR kube_deployment:tableau-service OR kube_deployment:powerbi-service OR kube_deployment:kube-utility-service)} by {kube_namespace,kube_deployment} >= 2"
+
+              },
+
+              ],
+            },
+          ]
+    },
+
+  }
+}
+
+variable "slo_thresholds" {
+  type = object({
+    slo_timeframes  = list(string)
+    slo_target_warn = string
+    slo_warning     = string
+  })
+  description = "Define threshold timeframes"
+  default = {
+    slo_timeframes  = ["7d", "30d", "90d"]
+    slo_target_warn = "98"
+    slo_warning     = "99"
+  }
+}
+
+variable "synthetic_test_data_health" {
+  default = {
+    alert_message      = "Endpoint has been unresponsive for more than 5m."
+    follow_redirects   = true   # For API HTTP test, whether or not the test should follow redirects.
+    accept_self_signed = true   # For SSL test, whether or not the test should allow self signed certificates.
+    test_type          = "api"  # Type of synthetic test
+    test_subtype       = "http" # Subtype of synthetic test
+    test_method        = "GET"  # Calling Method type of synthetic test
+    tick_interval      = 300    # Ping time interval
+    test_port          = 443
+    # priority           = 3
+    retry = {
+      count             = 3
+      interval          = 60000
+      renotify_interval = 180
+    }
+    assertions = [
+      {
+        type     = "statusCode"
+        operator = "is"
+        target   = 200
+      },
+      {
+        type     = "responseTime"
+        operator = "lessThan"
+        target   = 5000
+      }
+    ]
+  }
+}
+
+variable "synthetic_test_data_custom_health" {
+  default = {
+    alert_message      = "Endpoint has been unresponsive for more than 5m."
+    follow_redirects   = true  # For API HTTP test, whether or not the test should follow redirects.
+    accept_self_signed = true  # For SSL test, whether or not the test should allow self signed certificates.
+    test_method        = "GET" # Calling Method type of synthetic test
+    tick_interval      = 300   # Ping time interval
+    priority           = 2
+    retry = {
+      count             = 3
+      interval          = 60000
+      renotify_interval = 180
+    }
+  }
+}
+
+
+variable "synthetic_test_data_ssl" {
+  default = {
+    alert_message      = "{{host.name}}  has a certificate expiration date within 2 months."
+    follow_redirects   = true  # For API HTTP test, whether or not the test should follow redirects.
+    accept_self_signed = true  # For SSL test, whether or not the test should allow self signed certificates.
+    test_type          = "api" # Type of synthetic test
+    test_subtype       = "ssl" # Subtype of synthetic test
+    test_method        = "GET" # Calling Method type of synthetic test
+    tick_interval      = 259200 # Ping time interval
+    test_port          = 443
+    # priority           = 3
+    retry = {
+      count             = 2
+      interval          = 5000
+      renotify_interval = null
+    }
+    assertions = [
+      {
+        type     = "certificate"
+        operator = "isInMoreThan"
+        target   = 60
+      },
+      {
+        type     = "responseTime"
+        operator = "lessThan"
+        target   = 5000
+      }
+    ]
+  }
+}
+
+variable "synthetic_test_data_custom_ssl" {
+  default = {
+    alert_message      = "{{host.name}}  has a certificate expiration date within 2 months."
+    follow_redirects   = true  # For API HTTP test, whether or not the test should follow redirects.
+    accept_self_signed = true  # For SSL test, whether or not the test should allow self signed certificates.
+    test_method        = "GET" # Calling Method type of synthetic test
+    tick_interval      = 259200 # Ping time interval
+    priority           = 3
+    retry = {
+      count             = 2
+      interval          = 5000
+      renotify_interval = 180
+    }
+  }
+}
+
+variable "test_locations" {
+  default = {
+    us = ["pl:pwc-az-us-innovation-assurance-01-b2c26fb05c19e8cd21a92706c19826f0"]
+    eu = ["pl:pwc-az-we-labs20prd-api_url-01-6c2b5e71f9f4d5941118d4e94e6e6ca8"]
+    au = ["pl:pwc-az-au-labs20prd-api_url-01-0b674d675c6fa7787654556391a268ac"]
+    sg = ["pl:pwc-az-se-labs20prd-api_url-01-952574110b820872b723e1d8bf09bbcb"]
+  }
+}
+
+variable "teams" {
+  description = "List of health monitors for all teams and their services"
+  type       =  map(any)
+  default = {
+    team_1 = {
+      team_name = "TEAM_NAME_1"
+      services = [
+        {
+          name        = "django-engagement-admin"
+          trace       = "django"
+          set_we_tag  = false
+          service_name = null
+          notify_non_prod = "@teams-Orca_Non_Prod_Alerts_Channel"
+          notify_prod = "@teams-Orca_Prod_Alerts_Channel"
+          notify_her_monitors = ""
+          tag_ciid = {
+            us = "CI116457299"
+            au = "CI116457301"
+            eu = "CI116457303"
+            sg = "CI116457305"
+          }
+          synthetic_test_url_prefix  = "django-engagement-admin"
+          synthetics_mon_priority   = {}
+          synthetic_test = []
+          synthetic_oauth_login_test = []
+          critical_alerts = [
+            {
+              high_error_rate = [
+                "get_api/v1/engagement/"
+              ]
+              query = "sum(last_5m):(sum:trace.django.request.errors{env:##ENV##,service:django-engagement-admin,resource_name:get_api/v1/engagement/ }.as_count() / sum:trace.django.request.hits{env:##ENV##,service:django-engagement-admin,resource_name:get_api/v1/engagement/ }.as_count()) > 1"
+              critical_threshold = {
+                dev = "1", qa = "1", uat = "1", us_stg = "1", eu_stg = "1", us_prod = "1", eu_prod = "1", au_prod = "1", sg_prod = "1"
+              }
+              mon_priority = {}
+            },
+            {
+              high_error_rate = [
+                "get_api/v1/engagement/_p_pk_/._/"
+              ]
+              query = "sum(last_5m):(sum:trace.django.request.errors{env:##ENV##,service:django-engagement-admin,resource_name:get_api/v1/engagement/_p_pk_/._/}.as_count() / sum:trace.django.request.hits{env:##ENV##,service:django-engagement-admin,resource_name:get_api/v1/engagement/_p_pk_/._/}.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },
+            {
+              high_error_rate = [
+                "get_api/v1/users"
+              ]
+              query = "sum(last_5m):(sum:trace.django.request.errors{env:##ENV##,service:django-engagement-admin,resource_name:get_api/v1/users }.as_count() / sum:trace.django.request.hits{env:##ENV##,service:django-engagement-admin,resource_name:get_api/v1/users }.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },
+            {
+              high_error_rate = [
+                "post_api/rbac/v1/check"
+              ]
+              query = "sum(last_5m):(sum:trace.django.request.errors{env:##ENV##,service:django-engagement-admin,resource_name:post_api/rbac/v1/check }.as_count() / sum:trace.django.request.hits{env:##ENV##,service:django-engagement-admin,resource_name:post_api/rbac/v1/check }.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },
+            {
+              high_error_rate = [
+                "get_api/v4/feature-switch/user/_p_pwc_guid_0-9a-za-z_-"
+              ]
+              query = "sum(last_5m):(sum:trace.django.request.errors{env:##ENV##,service:django-engagement-admin,resource_name:get_api/v4/feature-switch/user/_p_pwc_guid_0-9a-za-z_- }.as_count() / sum:trace.django.request.hits{env:##ENV##,service:django-engagement-admin,resource_name:get_api/v4/feature-switch/user/_p_pwc_guid_0-9a-za-z_- }.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },
+
+          ]
+        },
+        {
+          name        = "Power BI"
+          trace       = "servlet"
+          set_we_tag  = false
+          service_name = null
+          notify_non_prod = "@teams-Orca_Non_Prod_Alerts_Channel"
+          notify_prod = "@teams-Orca_Prod_Alerts_Channel"
+          notify_her_monitors = ""
+          tag_ciid = {
+            us = "CI58685180"
+            au = "CI58685184"
+            eu = "CI58685186"
+            sg = "CI58685188"
+          }
+          synthetic_test_url_prefix = "powerbi-service"
+          synthetics_mon_priority   = {}
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com/api/v1/actuator/health"
+              type       = "health"
+            },
+            {
+              url_suffix = "-pwclabs.pwcglb.com"
+              type       = "ssl"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = [
+            {
+              high_error_rate = [
+                "get_/groups/_groupid_/dashboards",
+                "get_/groups/_groupid_/reports",
+                "get_/groups/_groupid_/users",
+              ]
+              query = null
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            }
+          ]          
+        },
+        {
+          name        = "Tableau"
+          trace       = "servlet"
+          set_we_tag  = false
+          service_name = null
+          notify_non_prod = "@teams-Orca_Non_Prod_Alerts_Channel"
+          notify_prod = "@teams-Orca_Prod_Alerts_Channel"
+          notify_her_monitors = ""
+          tag_ciid = {
+            us = "CI58685180"
+            au = "CI58685184"
+            eu = "CI58685186"
+            sg = "CI58685188"
+          }
+          synthetic_test_url_prefix = "tableau-service"
+          synthetics_mon_priority   = {}          
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com/api/v1/actuator/health"
+              type       = "health"
+            },
+            {
+              url_suffix = "-pwclabs.pwcglb.com"
+              type       = "ssl"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = [
+            {
+              high_error_rate = [
+                "get_/sites",
+                "get_/sites/_siteid_/users",
+                "post_/sites/_siteid_/users",
+                "get_/sites/_siteid_/workbooks/projects/_projectid",
+              ]
+              query = null
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "1.2", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            }
+          ]
+          
+        },
+        {
+          name        = "Kube Utility"
+          trace       = "servlet"
+          set_we_tag  = false
+          service_name = null
+          notify_non_prod = "@teams-Orca_Non_Prod_Alerts_Channel"
+          notify_prod = "@teams-Orca_Prod_Alerts_Channel"
+          notify_her_monitors = ""
+          tag_ciid = {
+            us = "CI58685180"
+            au = "CI58685184"
+            eu = "CI58685186"
+            sg = "CI58685188"
+          }
+          synthetic_test_url_prefix = "kube-utility-service"
+          synthetics_mon_priority   = {}          
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com/api/v1/actuator/health"
+              type       = "health"
+            },
+            {
+              url_suffix = "-pwclabs.pwcglb.com"
+              type       = "ssl"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = []          
+        },
+        {
+          name        = "Viz CMD API"
+          trace       = "servlet"
+          set_we_tag  = false
+          service_name = null
+          notify_non_prod = "@teams-Orca_Non_Prod_Alerts_Channel"
+          notify_prod = "@teams-Orca_Prod_Alerts_Channel"
+          notify_her_monitors = ""
+          tag_ciid = {
+            us = "CI58685180"
+            au = "CI58685184"
+            eu = "CI58685186"
+            sg = "CI58685188"
+          }
+          synthetic_test_url_prefix = "viz-cmd-api"
+          synthetics_mon_priority   = {}          
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com/api/v2/actuator/health"
+              type       = "health"
+            },
+            {
+              url_suffix = "-pwclabs.pwcglb.com"
+              type       = "ssl"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = [
+          {
+              high_error_rate = [
+                "patch_/workspaces/_workspaceid_/assets/_bitoolassetid_/legacyshare",
+                "delete_/workspaces/_workspaceid_/assets/_bitoolassetid_/legacyshare",             
+              ]
+              query = null
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "1.2", eu_stg = "0.05", us_prod = "0.05", eu_prod = "1", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            } 
+          ]         
+        },
+        {
+          name        = "Viz Management API"
+          trace       = "servlet"
+          set_we_tag  = false
+          service_name = null
+          notify_non_prod = "@teams-Orca_Non_Prod_Alerts_Channel"
+          notify_prod = "@teams-Orca_Prod_Alerts_Channel"
+          notify_her_monitors = ""
+          tag_ciid = {
+            us = "CI58685180"
+            au = "CI58685184"
+            eu = "CI58685186"
+            sg = "CI58685188"
+          }
+          synthetic_test_url_prefix = "viz-management-api"
+          synthetics_mon_priority   = {}          
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com/api/v2/actuator/health"
+              type       = "health"
+            },
+            {
+              url_suffix = "-pwclabs.pwcglb.com"
+              type       = "ssl"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = [            
+            {
+              high_error_rate = [
+                "delete_/workspaces/_workspaceid",
+                "404",
+                "patch_/assets/_approvaltrackingid",
+                "put_/workspaces/asset/create",
+                "get_/capacities", 
+                "get_/groups/_groupid"              
+              ]
+              query = null
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "1.2", eu_stg = "0.05", us_prod = "0.05", eu_prod = "1", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            }
+         ]
+          
+        },
+        {
+          name        = "Viz Query API"
+          trace       = "servlet"
+          set_we_tag  = false
+          service_name = null
+          notify_non_prod = "@teams-Orca_Non_Prod_Alerts_Channel"
+          notify_prod = "@teams-Orca_Prod_Alerts_Channel"
+          notify_her_monitors = ""
+          tag_ciid = {
+            us = "CI58685180"
+            au = "CI58685184"
+            eu = "CI58685186"
+            sg = "CI58685188"
+          }
+          synthetic_test_url_prefix = "viz-query-api"
+          synthetics_mon_priority   = {}           
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com/api/v2/actuator/health"
+              type       = "health"
+            },
+            {
+              url_suffix = "-pwclabs.pwcglb.com"
+              type       = "ssl"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = [            
+            {
+              high_error_rate = [
+                "get_/workspaces/_workspaceid",
+                "get_/tracking/_trackingid",
+                "get_/workspaces/_workspaceid_/assets/_assetid_/share",
+                "get_/share/_sharelink_/embed",
+                "get_/roles",                
+              ]
+              query = null
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "1.2", eu_stg = "0.05", us_prod = "0.05", eu_prod = "1", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            }
+         ]
+          
+        },
+        {
+          name        = "Notification"
+          trace       = "servlet"
+          set_we_tag  = false
+          service_name = null
+          notify_non_prod   = ""
+          notify_prod       = ""
+          notify_her_monitors = ""
+          tag_ciid = {
+            us = ""
+            au = ""
+            eu = ""
+            sg = ""
+          }
+          synthetic_test_url_prefix = "notification"
+          synthetics_mon_priority   = {}           
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com/heartbeat"
+              type       = "health"
+            },
+            {
+              url_suffix = "-pwclabs.pwcglb.com"
+              type       = "ssl"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = []
+          
+        },
+        {
+          name        = "VizInsights"
+          trace       = "servlet"
+          set_we_tag  = false
+          service_name = null
+          notify_non_prod = "@teams-Orca_Non_Prod_Alerts_Channel"
+          notify_prod = "@teams-Orca_Prod_Alerts_Channel"
+          notify_her_monitors = ""
+          tag_ciid = {
+            us = "CI58685180"
+            au = "CI58685184"
+            eu = "CI58685186"
+            sg = "CI58685188"
+          }
+          synthetic_test_url_prefix = "vizinsights"
+          synthetics_mon_priority   = {}           
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com/api/v1/actuator/health"
+              type       = "health"
+            },
+            {
+              url_suffix = "-pwclabs.pwcglb.com"
+              type       = "ssl"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = [
+            {
+              high_error_rate = [
+                "get_/admin/code/_code",
+                "get_/powerbi/clients/_clientid_/engagements/_engagementid_/assets",
+                "get_/powerbi/clients/_clientid_/engagements/_engagementid_/assets/_assetid_/exports/_exportid",
+                "get_/tableau/clients/_clientid_/engagements/_engagementid",
+                "get_/tableau/clients/_clientid_/engagements/_engagementid_/assets",                
+              ]
+              query = null
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "1.2", eu_stg = "0.05", us_prod = "0.05", eu_prod = "1", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            }
+          ]
+        },
+        {
+          name        = "feature-legacy"
+          trace       = "django"
+          set_we_tag  = false
+          service_name = null
+          notify_non_prod = "@teams-Orca_Non_Prod_Alerts_Channel"
+          notify_prod = "@teams-Orca_Prod_Alerts_Channel"
+          notify_her_monitors = ""
+          tag_ciid = {
+            us = ""
+            au = ""
+            eu = ""
+            sg = ""
+          }
+          synthetic_test_url_prefix = "feature-service-legacy"
+          synthetics_mon_priority   = {}
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com/health"
+              type       = "health"
+            },
+            {
+              url_suffix = "-pwclabs.pwcglb.com"
+              type       = "ssl"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = [
+            {
+              high_error_rate = [
+                "get_api/v4/feature-switch/user/_p_pwc_guid_0-9a-za-z_-"
+              ]
+              query = "sum(last_5m):(sum:trace.django.request.errors{env:##ENV##,service:feature-service-legacy,resource_name:get_api/v4/feature-switch/user/_p_pwc_guid_0-9a-za-z_- }.as_count() / sum:trace.django.request.hits{env:##ENV##,service:feature-service-legacy,resource_name:get_api/v4/feature-switch/user/_p_pwc_guid_0-9a-za-z_- }.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            }
+          ]          
+        },
+        {
+          name        = "engagement admin"
+          trace       = "django"
+          set_we_tag  = false
+          service_name = "django-engagement-admin "
+          notify_non_prod = "@teams-Orca_Non_Prod_Alerts_Channel"
+          notify_prod = "@teams-Orca_Prod_Alerts_Channel"
+          notify_her_monitors = ""
+          tag_ciid = {
+            us = "CI116457299"
+            au = "CI116457301"
+            eu = "CI116457303"
+            sg = "CI116457305"
+          }
+          synthetic_test_url_prefix = "engagements"
+          synthetics_mon_priority   = {}
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com/health"
+              type       = "health"
+            },
+            {
+              url_suffix = "-pwclabs.pwcglb.com"
+              type       = "ssl"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = []          
+        },
+        {
+          name        = "MS Activity"
+          trace       = "servlet"
+          set_we_tag  = false
+          service_name = null
+          notify_non_prod = "@teams-Orca_Non_Prod_Alerts_Channel"
+          notify_prod = "@teams-Orca_Prod_Alerts_Channel"
+          notify_her_monitors = ""
+          tag_ciid = {
+            global = "CI117010551"
+            us = "CI117163173"
+            au = "CI117163175"
+            eu = "CI117163177"
+            sg = "CI117163179"
+          }
+          synthetic_test_url_prefix = "ms-activity-service"
+          synthetics_mon_priority   = {}           
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com/api/v1/actuator/health"
+              type       = "health"
+            },
+            {
+              url_suffix = "-pwclabs.pwcglb.com"
+              type       = "ssl"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = []
+          
+        },
+      ]
+    },
+    team_2 = {
+      team_name = "TEAM_NAME_2"
+      services = [
+        {
+          name        = "azure storage"
+          trace       = "servlet"
+          set_we_tag  = false
+          service_name = null
+          notify_non_prod   = "@teams-DD_BW_NonProd"
+          notify_prod       = "@teams-DD_BW_Prod"
+          notify_her_monitors = "@chiranjit.c.maity@pwc.com @hemanth.malka@pwc.com @alan.rossi@pwc.com"
+          tag_ciid = {
+            us = "CI116457267"
+            au = "CI116457269"
+            eu = "CI116457271"
+            sg = "CI116457273"
+          }
+          synthetic_test_url_prefix = "azure-storage-service"
+          synthetics_mon_priority   = {}
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com/api/v1/actuator/health"
+              type       = "health"
+            },
+            {
+              url_suffix = "-pwclabs.pwcglb.com"
+              type       = "ssl"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = [
+            {
+              high_error_rate = [
+                "post_/blobs/properties"
+              ]
+              query = "sum(last_5m):(sum:trace.servlet.request.errors{env:##ENV##,service:azure-storage-service,resource_name:post_/blobs/properties }.as_count() / sum:trace.servlet.request.hits{env:##ENV##,service:azure-storage-service,resource_name:post_/blobs/properties }.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },
+            {
+              high_error_rate = [
+                "post_/filesystems/_filesystemname_/sastoken"
+              ]
+              query = "sum(last_5m):(sum:trace.servlet.request.errors{env:##ENV##,service:azure-storage-service,resource_name:post_/filesystems/_filesystemname_/sastoken  }.as_count() / sum:trace.servlet.request.hits{env:##ENV##,service:azure-storage-service,resource_name:post_/filesystems/_filesystemname_/sastoken  }.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },
+            {
+              high_error_rate = [
+                "post_/filesystems/_filesystemname_/blobs/sastoken"
+              ]
+              query = "sum(last_5m):(sum:trace.servlet.request.errors{env:##ENV##,service:azure-storage-service,resource_name:post_/filesystems/_filesystemname_/blobs/sastoken }.as_count() / sum:trace.servlet.request.hits{env:##ENV##,service:azure-storage-service,resource_name:post_/filesystems/_filesystemname_/blobs/sastoken }.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },
+            {
+              high_error_rate = [
+                "post_/filesystems/_filesystemname"
+              ]
+              query = "sum(last_5m):(sum:trace.servlet.request.errors{env:##ENV##,service:azure-storage-service,resource_name:post_/filesystems/_filesystemname }.as_count() / sum:trace.servlet.request.hits{env:##ENV##,service:azure-storage-service,resource_name:post_/filesystems/_filesystemname }.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            }
+          ]
+        },
+        {
+          name        = "directory"
+          trace       = "servlet"
+          set_we_tag  = false
+          service_name = null
+          notify_non_prod   = "@teams-DD_BW_NonProd"
+          notify_prod       = "@teams-DD_BW_Prod"
+          notify_her_monitors = "@chiranjit.c.maity@pwc.com @hemanth.malka@pwc.com @alan.rossi@pwc.com"
+          tag_ciid = {
+            us = "CI116457283"
+            au = "CI116457285"
+            eu = "CI116457287"
+            sg = "CI116457289"
+          }
+          synthetic_test_url_prefix = "directory-service"
+          synthetics_mon_priority   = {}
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com/api/v1/actuator/health"
+              type       = "health"
+            },
+            {
+              url_suffix = "-pwclabs.pwcglb.com"
+              type       = "ssl"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = [
+            {
+              high_error_rate = [
+                "patch_/groups/_groupname", #creating monitors for this resource as per # 118283
+                "post_/groups/validateusers", #creating monitors for this resource as per # 118283
+                "put_/groups/_groupname_/appidmembers", #creating monitors for this resource as per # 118283
+                "post_/groups/_groupuniqueid", #creating monitors for this resource as per # 118283
+                "delete_/groups/_groupname", #creating monitors for this resource as per # 118283           
+              ]
+              query = null
+              critical_threshold = {
+                dev = "1", qa = "1", uat = "1", us_stg = "1", eu_stg = "1", us_prod = "1", eu_prod = "1", au_prod = "1", sg_prod = "1"
+              }
+              mon_priority = {}
+            }
+          ]
+        },
+        {
+          name        = "engagement service v2"
+          trace       = "servlet"
+          set_we_tag  = false
+          service_name = "engagement-service-v2"
+          notify_non_prod   = "@teams-DD_BW_NonProd"
+          notify_prod       = "@teams-DD_BW_Prod"
+          notify_her_monitors = "@chiranjit.c.maity@pwc.com @hemanth.malka@pwc.com @alan.rossi@pwc.com"
+          tag_ciid = {
+            us = "CI116457313"
+            au = "CI116457315"
+            eu = "CI116457317"
+            sg = "CI116457319"
+          }
+          synthetic_test_url_prefix = "engagement-service"
+          synthetics_mon_priority   = {}
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com/api/v2/actuator/health"
+              type       = "health"
+            },
+            {
+              url_suffix = "-pwclabs.pwcglb.com"
+              type       = "ssl"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = [
+            {
+              high_error_rate = [
+                "delete_/admin/engagements/_engagementid_/services/_servicename"
+              ]
+              query = "sum(last_5m):(sum:trace.servlet.request.errors{env:##ENV##,service:engagement-service-v2,resource_name:delete_/admin/engagements/_engagementid_/services/_servicename}.as_count() / sum:trace.servlet.request.hits{env:##ENV##,service:engagement-service-v2,resource_name:delete_/admin/engagements/_engagementid_/services/_servicename}.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },
+            {
+              high_error_rate = [
+                "get_/admin/engagements/_engagementid_/services"
+              ]
+              query = "sum(last_5m):(sum:trace.servlet.request.errors{env:##ENV##,service:engagement-service-v2,resource_name:get_/admin/engagements/_engagementid_/services}.as_count() / sum:trace.servlet.request.hits{env:##ENV##,service:engagement-service-v2,resource_name:get_/admin/engagements/_engagementid_/services}.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },
+            {
+              high_error_rate = [
+                "get_/admin/engagements/_engagementid_/connections"
+              ]
+              query = "sum(last_5m):(sum:trace.servlet.request.errors{env:##ENV##,service:engagement-service-v2,resource_name:get_/admin/engagements/_engagementid_/connections}.as_count() / sum:trace.servlet.request.hits{env:##ENV##,service:engagement-service-v2,resource_name:get_/admin/engagements/_engagementid_/connections}.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },
+            {
+              high_error_rate = [
+                "get_/engagements/_engagementid"
+              ]
+              query = "sum(last_5m):(sum:trace.servlet.request.errors{env:##ENV##,service:engagement-service-v2,resource_name:get_/engagements/_engagementid}.as_count() / sum:trace.servlet.request.hits{env:##ENV##,service:engagement-service-v2,resource_name:get_/engagements/_engagementid}.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            }, 
+            {
+              high_error_rate = [
+                "put_/admin/engagements/_engagementid_/services/_servicename_/resources/_resourcename_/connections"
+              ]
+              query = "sum(last_5m):(sum:trace.servlet.request.errors{env:##ENV##,service:engagement-service-v2,resource_name:put_/admin/engagements/_engagementid_/services/_servicename_/resources/_resourcename_/connections}.as_count() / sum:trace.servlet.request.hits{env:##ENV##,service:engagement-service-v2,resource_name:put_/admin/engagements/_engagementid_/services/_servicename_/resources/_resourcename_/connections}.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },                                       
+          ]         
+        },
+        {
+          name        = "fabric api v3"
+          trace       = "servlet"
+          set_we_tag  = false
+          service_name = "fabric-api-v3"
+          notify_non_prod   = "@teams-DD_BW_NonProd"
+          notify_prod       = "@teams-DD_BW_Prod"
+          notify_her_monitors = "@chiranjit.c.maity@pwc.com @hemanth.malka@pwc.com @alan.rossi@pwc.com"
+          tag_ciid = {
+            us = "CI116457321"
+            au = "CI116457324"
+            eu = "CI116457326"
+            sg = "CI116457328"
+          }
+          synthetic_test_url_prefix  = "fabric-api"
+          synthetics_mon_priority   = {}
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com/api/v3/actuator/health"
+              type       = "health"
+            },
+            {
+              url_suffix = "-pwclabs.pwcglb.com"
+              type       = "ssl"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = [
+            {
+              high_error_rate = [
+                "get_/workspaces/_workspaceid_/sas"
+              ]
+              query = "sum(last_5m):(sum:trace.servlet.request.errors{env:##ENV##,service:fabric-api-v3,resource_name:get_/workspaces/_workspaceid_/sas }.as_count() / sum:trace.servlet.request.hits{env:##ENV##,service:fabric-api-v3,resource_name:get_/workspaces/_workspaceid_/sas }.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },
+            {
+              high_error_rate = [
+                "get_/workspaces/_workspaceid_/connections"
+              ]
+              query = "sum(last_5m):(sum:trace.servlet.request.errors{env:##ENV##,service:fabric-api-v3,resource_name:get_/workspaces/_workspaceid_/connections }.as_count() / sum:trace.servlet.request.hits{env:##ENV##,service:fabric-api-v3,resource_name:get_/workspaces/_workspaceid_/connections }.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },
+          ]          
+        },
+        {
+          name        = "generic kafka producer"
+          trace       = "servlet"
+          set_we_tag  = false
+          service_name = null
+          notify_non_prod   = "@teams-DD_BW_NonProd"
+          notify_prod       = "@teams-DD_BW_Prod"
+          notify_her_monitors = "@chiranjit.c.maity@pwc.com @hemanth.malka@pwc.com @alan.rossi@pwc.com"
+          tag_ciid = {
+            us = "CI116457330"
+            au = "CI116457332"
+            eu = "CI116457334"
+            sg = "CI116457336"
+          }
+          synthetic_test_url_prefix = "generic-kafka-producer"
+          synthetics_mon_priority   = {}
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com/api/v1/actuator/health"
+              type       = "health"
+            },
+            {
+              url_suffix = "-pwclabs.pwcglb.com"
+              type       = "ssl"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = []
+        },
+        {
+          name        = "ldap admin"
+          trace       = "servlet"
+          set_we_tag  = false
+          service_name = null
+          notify_non_prod   = "@teams-DD_BW_NonProd"
+          notify_prod       = "@teams-DD_BW_Prod"
+          notify_her_monitors = "@chiranjit.c.maity@pwc.com @hemanth.malka@pwc.com @alan.rossi@pwc.com"
+          tag_ciid = {
+            us = "CI116457354"
+            au = "CI116457356"
+            eu = "CI116457360"
+            sg = "CI116457365"
+          }
+          synthetic_test_url_prefix = "ldap-admin-service"
+          synthetics_mon_priority   = {}
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com/api/v1/actuator/health"
+              type       = "health"
+            },
+            {
+              url_suffix = "-pwclabs.pwcglb.com"
+              type       = "ssl"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = []      
+        },
+        {
+          name        = "workspace aggregation handler"
+          trace       = "servlet"
+          set_we_tag  = false
+          service_name = null
+          notify_non_prod   = "@teams-DD_BW_NonProd"
+          notify_prod       = "@teams-DD_BW_Prod"
+          notify_her_monitors = "@chiranjit.c.maity@pwc.com @hemanth.malka@pwc.com @alan.rossi@pwc.com"
+          tag_ciid = {
+            us = "CI116457421"
+            au = "CI41101427"
+            eu = "CI41101419"
+            sg = "CI58685029"
+          }
+          synthetic_test_url_prefix = "workspace-aggregation-handler"
+          synthetics_mon_priority   = {}
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com/api/v1/actuator/health"
+              type       = "health"
+            },
+            {
+              url_suffix = "-pwclabs.pwcglb.com"
+              type       = "ssl"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = []          
+        },
+        {
+          name        = "workspace event handler"
+          trace       = "servlet"
+          set_we_tag  = false
+          service_name = null
+          notify_non_prod   = "@teams-DD_BW_NonProd"
+          notify_prod       = "@teams-DD_BW_Prod"
+          notify_her_monitors = "@chiranjit.c.maity@pwc.com @hemanth.malka@pwc.com @alan.rossi@pwc.com"
+          tag_ciid = {
+            us = "CI116457421"
+            au = "CI41101427"
+            eu = "CI41101419"
+            sg = "CI58685029"
+          }
+          synthetic_test_url_prefix = "workspace-event-handler"
+          synthetics_mon_priority   = {}
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com/api/v1/actuator/health"
+              type       = "health"
+            },
+            {
+              url_suffix = "-pwclabs.pwcglb.com"
+              type       = "ssl"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = []
+        },
+        {
+          name        = "workspace exp"
+          trace       = "servlet"
+          set_we_tag  = true
+          service_name = null
+          notify_non_prod   = "@teams-DD_BW_NonProd"
+          notify_prod       = "@teams-DD_BW_Prod"
+          notify_her_monitors = "@chiranjit.c.maity@pwc.com @hemanth.malka@pwc.com @alan.rossi@pwc.com"
+          tag_ciid = {
+            us = "CI119483161"
+            au = "CI119483161"
+            eu = "CI119483161"
+            sg = "CI119483161"
+          }
+          synthetic_test_url_prefix = "workspace-exp"
+          synthetics_mon_priority   = {}
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com/api/v1/actuator/health"
+              type       = "health"
+            },
+            {
+              url_suffix = "-pwclabs.pwcglb.com"
+              type       = "ssl"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = [
+            {
+              high_error_rate = [
+                "post_/workspaces/search"
+              ]
+              query = "sum(last_5m):(sum:trace.servlet.request.errors{env:##ENV##,service:workspace-exp,resource_name:post_/workspaces/search }.as_count() / sum:trace.servlet.request.hits{env:##ENV##,service:workspace-exp,resource_name:post_/workspaces/search }.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },
+            {
+              high_error_rate = [
+                "get_/workspaces/_workspaceid"
+              ]
+              query = "sum(last_5m):(sum:trace.servlet.request.errors{env:##ENV##,service:workspace-exp,resource_name:get_/workspaces/_workspaceid }.as_count() / sum:trace.servlet.request.hits{env:##ENV##,service:workspace-exp,resource_name:get_/workspaces/_workspaceid }.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },
+            {
+              high_error_rate = [
+                "get_/public/workspaces/_workspaceid_/users/_userid"
+              ]
+              query = "sum(last_5m):(sum:trace.servlet.request.errors{env:##ENV##,service:workspace-exp,resource_name:get_/public/workspaces/_workspaceid_/users/_userid }.as_count() / sum:trace.servlet.request.hits{env:##ENV##,service:workspace-exp,resource_name:get_/public/workspaces/_workspaceid_/users/_userid }.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            }
+          ]         
+        },
+        {
+          name        = "workspace search handler"
+          trace       = "servlet"
+          set_we_tag  = false
+          service_name = null
+          notify_non_prod   = "@teams-DD_BW_NonProd"
+          notify_prod       = "@teams-DD_BW_Prod"
+          notify_her_monitors = "@chiranjit.c.maity@pwc.com @hemanth.malka@pwc.com @alan.rossi@pwc.com"
+          tag_ciid = {
+            us = "CI116457421"
+            au = "CI41101427"
+            eu = "CI41101419"
+            sg = "CI58685029"
+          }
+          synthetic_test_url_prefix = "workspace-search-handler"
+          synthetics_mon_priority   = {}
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com/api/v1/actuator/health"
+              type       = "health"
+            },
+            {
+              url_suffix = "-pwclabs.pwcglb.com"
+              type       = "ssl"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = []         
+        },
+        {
+          name        = "workspace service"
+          trace       = "servlet"
+          set_we_tag  = false
+          service_name = null
+          notify_non_prod   = "@teams-DD_BW_NonProd"
+          notify_prod       = "@teams-DD_BW_Prod"
+          notify_her_monitors = "@chiranjit.c.maity@pwc.com @hemanth.malka@pwc.com @alan.rossi@pwc.com"
+          tag_ciid = {
+            us = "CI116457421"
+            au = "CI41101427"
+            eu = "CI41101419"
+            sg = "CI58685029"
+          }
+          synthetic_test_url_prefix = "workspace-service"
+          synthetics_mon_priority   = {}
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com/api/v1/actuator/health"
+              type       = "health"
+            },
+            {
+              url_suffix = "-pwclabs.pwcglb.com"
+              type       = "ssl"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = [
+            {
+              high_error_rate = [
+                "get_/workspaces/_workspaceid"
+              ]
+              query = "sum(last_5m):(sum:trace.servlet.request.errors{env:##ENV##,service:workspace-service,resource_name:get_/workspaces/_workspaceid }.as_count() / sum:trace.servlet.request.hits{env:##ENV##,service:workspace-service,resource_name:get_/workspaces/_workspaceid }.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },
+            {
+              high_error_rate = [
+                "delete_/workspaces/_workspaceid"
+              ]
+              query = "sum(last_5m):(sum:trace.servlet.request.errors{env:##ENV##,service:workspace-service,resource_name:delete_/workspaces/_workspaceid }.as_count() / sum:trace.servlet.request.hits{env:##ENV##,service:workspace-service,resource_name:delete_/workspaces/_workspaceid }.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },
+            {
+              high_error_rate = [
+                "put_/workspaces/_workspaceid_/archive"
+              ]
+              query = "sum(last_5m):(sum:trace.servlet.request.errors{env:##ENV##,service:workspace-service,resource_name:put_/workspaces/_workspaceid_/archive }.as_count() / sum:trace.servlet.request.hits{env:##ENV##,service:workspace-service,resource_name:put_/workspaces/_workspaceid_/archive }.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },
+            {
+              high_error_rate = [
+                "put_/workspaces/_workspaceid_/pre-archive"
+              ]
+              query = "sum(last_5m):(sum:trace.servlet.request.errors{env:##ENV##,service:workspace-service,resource_name:put_/workspaces/_workspaceid_/pre-archive }.as_count() / sum:trace.servlet.request.hits{env:##ENV##,service:workspace-service,resource_name:put_/workspaces/_workspaceid_/pre-archive }.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },
+            {
+              high_error_rate = [
+                "post_/workspaces/search"
+              ]
+              query = "sum(last_5m):(sum:trace.servlet.request.errors{env:##ENV##,service:workspace-service,resource_name:post_/workspaces/search }.as_count() / sum:trace.servlet.request.hits{env:##ENV##,service:workspace-service,resource_name:post_/workspaces/search }.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },
+            {
+              high_error_rate = [
+                "post_/workspaces"
+              ]
+              query = "sum(last_5m):(sum:trace.servlet.request.errors{env:##ENV##,service:workspace-service,resource_name:post_/workspaces }.as_count() / sum:trace.servlet.request.hits{env:##ENV##,service:workspace-service,resource_name:post_/workspaces }.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },
+            {
+              high_error_rate = [
+                "patch_/workspaces/_workspaceid_/users"
+              ]
+              query = "sum(last_5m):(sum:trace.servlet.request.errors{env:##ENV##,service:workspace-service,resource_name:patch_/workspaces/_workspaceid_/users }.as_count() / sum:trace.servlet.request.hits{env:##ENV##,service:workspace-service,resource_name:patch_/workspaces/_workspaceid_/users }.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },
+            {
+              high_error_rate = [
+                "get_/workspaces/_workspaceid_/users"
+              ]
+              query = "sum(last_5m):(sum:trace.servlet.request.errors{env:##ENV##,service:workspace-service,resource_name:get_/workspaces/_workspaceid_/users }.as_count() / sum:trace.servlet.request.hits{env:##ENV##,service:workspace-service,resource_name:get_/workspaces/_workspaceid_/users }.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            }
+          ]        
+        },
+        {
+          name        = "ms-teams-wrapper"
+          trace       = "aspnet_core"
+          set_we_tag  = false
+          service_name = null
+          notify_non_prod   = "@teams-DD_BW_NonProd"
+          notify_prod       = "@teams-DD_BW_Prod"
+          notify_her_monitors = "@chiranjit.c.maity@pwc.com @hemanth.malka@pwc.com @alan.rossi@pwc.com"
+          tag_ciid = {
+            us = "CI116457421"
+            au = "CI41101427"
+            eu = "CI41101419"
+            sg = "CI58685029"
+          }
+          synthetic_test_url_prefix  = "ms-teams-wrapper"
+          synthetics_mon_priority   = {}
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com"
+              type       = "ssl"
+            },
+            {
+              url_suffix = "-pwclabs.pwcglb.com/healthcheck"
+              type       = "health"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = [
+            {
+              high_error_rate = [
+                "ms-teams-wrapper_data_dog_tracer"
+              ]
+              query = "sum(last_10m):(sum:trace.ms_teams_wrapper_data_dog_tracer.errors{env:##ENV##,service:ms-teams-wrapper,resource_name:ms-teams-wrapper_data_dog_tracer}.as_count() / sum:trace.ms_teams_wrapper_data_dog_tracer.hits{env:##ENV##,service:ms-teams-wrapper,resource_name:ms-teams-wrapper_data_dog_tracer }.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            }
+          ]       
+        }
+      ]
+    },
+    team_3 = {
+      team_name = "TEAM_NAME_3"
+      services = [
+        {
+          name        = "MFE"
+          trace       = "aspnet_core"
+          set_we_tag  = false
+          service_name = null
+          notify_non_prod   = "@teams-Sea_Lions_Non_Prod_Alerts_Channel"
+          notify_prod       = "@teams-Sea_Lions_Prod_Alerts_Channel"
+          notify_her_monitors = "@SeaLions-Monitoring-Notifications@groups.pwc.com"
+          tag_ciid = {
+            global = "CI117163297"
+            us = "CI117163299"
+            au = "CI117163301"
+            eu = "CI117163303"
+            sg = "CI117163305"
+          }
+          synthetic_test_url_prefix = "workbench-ng"
+          synthetics_mon_priority   = {}
+          synthetic_test = [
+            {
+              url_suffix   = "-pwclabs.pwcglb.com"
+              type         = "ssl"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = []
+          
+        },
+        {
+          name        = "MFE Analytics"
+          trace       = "aspnet_core"
+          set_we_tag  = false
+          service_name = "workbench-ng-analytics"
+          notify_non_prod   = "@teams-Sea_Lions_Non_Prod_Alerts_Channel"
+          notify_prod       = "@teams-Sea_Lions_Prod_Alerts_Channel"
+          notify_her_monitors = "@SeaLions-Monitoring-Notifications@groups.pwc.com"
+          tag_ciid = {
+            global = "CI117010517"
+            us = "CI117163181"
+            au = "CI117163183"
+            eu = "CI117163185"
+            sg = "CI117163187"
+          }
+          synthetic_test_url_prefix = "workbench-ng"
+          synthetics_mon_priority   = {}
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com/api/analytics/v1/health"
+              type       = "health"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = []
+        },
+        {
+          name        = "MFE App Configuration"
+          trace       = "aspnet_core"
+          set_we_tag  = false
+          service_name = "workbench-ng-app-configuration"
+          notify_non_prod   = "@teams-Sea_Lions_Non_Prod_Alerts_Channel"
+          notify_prod       = "@teams-Sea_Lions_Prod_Alerts_Channel"
+          notify_her_monitors = "@SeaLions-Monitoring-Notifications@groups.pwc.com"
+          tag_ciid = {
+            global = "CI117010525"
+            us = "CI117163197"
+            au = "CI117163199"
+            eu = "CI117163201"
+            sg = "CI117163203"
+          }
+          synthetic_test_url_prefix = "workbench-ng"
+          synthetics_mon_priority   = {}
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com/api/app-configuration/v1/health"
+              type       = "health"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = [
+            {
+              high_error_rate = [
+                "get_/api/app-configuration/v_version_/app-configuration/app-settings/internal-domains"
+              ]
+              query = "sum(last_5m):(sum:trace.aspnet_core.request.errors{env:##ENV##,service:workbench-ng-app-configuration,resource_name:get_/api/app-configuration/v_version_/app-configuration/app-settings/internal-domains}.as_count() / sum:trace.aspnet_core.request.hits{env:##ENV##,service:workbench-ng-app-configuration,resource_name:get_/api/app-configuration/v_version_/app-configuration/app-settings/internal-domains}.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },
+            {
+              high_error_rate = [
+                "get_/api/app-configuration/v_version_/app-configuration/_key"
+              ]
+              query = "sum(last_5m):(sum:trace.aspnet_core.request.errors{env:##ENV##,service:workbench-ng-app-configuration,resource_name:get_/api/app-configuration/v_version_/app-configuration/_key}.as_count() / sum:trace.aspnet_core.request.hits{env:##ENV##,service:workbench-ng-app-configuration,resource_name:get_/api/app-configuration/v_version_/app-configuration/_key}.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            }
+          ]
+        },
+        {
+          name        = "MFE Authorization"
+          trace       = "aspnet_core"
+          set_we_tag  = false
+          service_name = "workbench-ng-authorization"
+          notify_non_prod   = "@teams-Sea_Lions_Non_Prod_Alerts_Channel"
+          notify_prod       = "@teams-Sea_Lions_Prod_Alerts_Channel"
+          notify_her_monitors = "@SeaLions-Monitoring-Notifications@groups.pwc.com"
+          tag_ciid = {
+            global = "CI117010523"
+            us = "CI117163205"
+            au = "CI117163207"
+            eu = "CI117163209"
+            sg = "CI117163211"
+          }
+          synthetic_test_url_prefix = "workbench-ng"
+          synthetics_mon_priority   = {}
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com/api/authorization/v1/health"
+              type       = "health"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = [
+            {
+              high_error_rate = [
+                "get_/api/authorization/v_version_/passport"
+              ]
+              query = "sum(last_5m):(sum:trace.aspnet_core.request.errors{env:##ENV##,service:workbench-ng-authorization,resource_name:get_/api/authorization/v_version_/passport}.as_count() / sum:trace.aspnet_core.request.hits{env:##ENV##,service:workbench-ng-authorization,resource_name:get_/api/authorization/v_version_/passport}.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },
+          ]
+          
+        },
+        {
+          name        = "MFE Content"
+          trace       = "aspnet_core"
+          set_we_tag  = false
+          service_name = "workbench-ng-content"
+          notify_non_prod   = "@teams-Sea_Lions_Non_Prod_Alerts_Channel"
+          notify_prod       = "@teams-Sea_Lions_Prod_Alerts_Channel"
+          notify_her_monitors = "@SeaLions-Monitoring-Notifications@groups.pwc.com"
+          tag_ciid = {
+            global = "CI117010521"
+            us = "CI117163213"
+            au = "CI117163215"
+            eu = "CI117163217"
+            sg = "CI117163219"
+          }
+          synthetic_test_url_prefix = "workbench-ng"
+          synthetics_mon_priority   = {}
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com/api/content/v1/health"
+              type       = "health"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = [
+          ]
+          
+        },
+        {
+          name        = "MFE Gallery"
+          trace       = "aspnet_core"
+          set_we_tag  = false
+          service_name = "workbench-ng-gallery"
+          notify_non_prod   = "@teams-Sea_Lions_Non_Prod_Alerts_Channel"
+          notify_prod       = "@teams-Sea_Lions_Prod_Alerts_Channel"
+          notify_her_monitors = "@SeaLions-Monitoring-Notifications@groups.pwc.com"
+          tag_ciid = {
+            global = "CI117010519"
+            us = "CI117163221"
+            au = "CI117163223"
+            eu = "CI117163225"
+            sg = "CI117163227"
+          }
+          synthetic_test_url_prefix = "workbench-ng"
+          synthetics_mon_priority   = {}
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com/api/gallery/v1/health"
+              type       = "health"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = [
+          ]
+        },
+        {
+          name        = "MFE FrontEnds"
+          trace       = "aspnet_core"
+          set_we_tag  = false
+          service_name = "workbench-ng-microfrontends"
+          notify_non_prod   = "@teams-Sea_Lions_Non_Prod_Alerts_Channel"
+          notify_prod       = "@teams-Sea_Lions_Prod_Alerts_Channel"
+          notify_her_monitors = "@SeaLions-Monitoring-Notifications@groups.pwc.com"
+          tag_ciid = {
+            global = "CI117010527"
+            us = "CI117163229"
+            au = "CI117163231"
+            eu = "CI117163233"
+            sg = "CI117163235"
+          }
+          synthetic_test_url_prefix = "workbench-ng"
+          synthetics_mon_priority   = {}
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com/api/microfrontends/v1/health"
+              type       = "health"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = [
+            {
+              high_error_rate = [
+                "post_/eventhandlers/sitecreatedtopicevent"
+              ]
+              query = "sum(last_5m):(sum:trace.aspnet_core.request.errors{env:##ENV##,service:workbench-ng-microfrontends,resource_name:post_/eventhandlers/sitecreatedtopicevent}.as_count() / sum:trace.aspnet_core.request.hits{env:##ENV##,service:workbench-ng-microfrontends,resource_name:post_/eventhandlers/sitecreatedtopicevent}.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },
+            {
+              high_error_rate = [
+                "get_/api/microfrontends/v_version_/micro-frontends/importmap"
+              ]
+              query = "sum(last_5m):(sum:trace.aspnet_core.request.errors{env:##ENV##,service:workbench-ng-microfrontends,resource_name:get_/api/microfrontends/v_version_/micro-frontends/importmap}.as_count() / sum:trace.aspnet_core.request.hits{env:##ENV##,service:workbench-ng-microfrontends,resource_name:get_/api/microfrontends/v_version_/micro-frontends/importmap}.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },
+            {
+              high_error_rate = [
+                "get_/api/microfrontends/v_version_/micro-frontends"
+              ]
+              query = "sum(last_5m):(sum:trace.aspnet_core.request.errors{env:##ENV##,service:workbench-ng-microfrontends,resource_name:get_/api/microfrontends/v_version_/micro-frontends}.as_count() / sum:trace.aspnet_core.request.hits{env:##ENV##,service:workbench-ng-microfrontends,resource_name:get_/api/microfrontends/v_version_/micro-frontends}.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },
+          ]
+          
+        },
+        {
+          name        = "MFE Pages"
+          trace       = "aspnet_core"
+          set_we_tag  = false
+          service_name = "workbench-ng-pages"
+          notify_non_prod   = "@teams-Sea_Lions_Non_Prod_Alerts_Channel"
+          notify_prod       = "@teams-Sea_Lions_Prod_Alerts_Channel"
+          notify_her_monitors = "@SeaLions-Monitoring-Notifications@groups.pwc.com"
+          tag_ciid = {
+            global = "CI117010529"
+            us = "CI117163237"
+            au = "CI117163239"
+            eu = "CI117163241"
+            sg = "CI117163243"
+          }
+          synthetic_test_url_prefix = "workbench-ng"
+          synthetics_mon_priority   = {}
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com/api/pages/v1/health"
+              type       = "health"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = [
+            {
+              high_error_rate = [
+                "post_/eventhandlers/sitecreatedtopicevent"
+              ]
+              query = "sum(last_5m):(sum:trace.aspnet_core.request.errors{env:##ENV##,service:workbench-ng-pages,resource_name:post_/eventhandlers/sitecreatedtopicevent}.as_count() / sum:trace.aspnet_core.request.hits{env:##ENV##,service:workbench-ng-pages,resource_name:post_/eventhandlers/sitecreatedtopicevent}.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },
+            {
+              high_error_rate = [
+                "get_/api/pages/v_version_/pages"
+              ]
+              query = "sum(last_5m):(sum:trace.aspnet_core.request.errors{env:##ENV##,service:workbench-ng-pages,resource_name:get_/api/pages/v_version_/pages}.as_count() / sum:trace.aspnet_core.request.hits{env:##ENV##,service:workbench-ng-pages,resource_name:get_/api/pages/v_version_/pages}.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },
+          ]
+        
+        },
+        {
+          name        = "MFE Sites"
+          trace       = "aspnet_core"
+          set_we_tag  = false
+          service_name = "workbench-ng-sites"
+          notify_non_prod   = "@teams-Sea_Lions_Non_Prod_Alerts_Channel"
+          notify_prod       = "@teams-Sea_Lions_Prod_Alerts_Channel"
+          notify_her_monitors = "@SeaLions-Monitoring-Notifications@groups.pwc.com"
+          tag_ciid = {
+            global = "CI117010531"
+            us = "CI117163245"
+            au = "CI117163247"
+            eu = "CI117163249"
+            sg = "CI117163251"
+          }
+          synthetic_test_url_prefix = "workbench-ng"
+          synthetics_mon_priority   = {}
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com/api/sites/v1/health"
+              type       = "health"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = [
+            {
+              high_error_rate = [
+                "get_/api/sites/sitesandcontexts/_contexttype"
+              ]
+              query = "sum(last_5m):(sum:trace.aspnet_core.request.errors{env:##ENV##,service:workbench-ng-sites,resource_name:get_/api/sites/sitesandcontexts/_contexttype}.as_count() / sum:trace.aspnet_core.request.hits{env:##ENV##,service:workbench-ng-sites,resource_name:get_/api/sites/sitesandcontexts/_contexttype}.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },
+            {
+              high_error_rate = [
+                "post_/api/sites"
+              ]
+              query = "sum(last_5m):(sum:trace.aspnet_core.request.errors{env:##ENV##,service:workbench-ng-sites,resource_name:post_/api/sites}.as_count() / sum:trace.aspnet_core.request.hits{env:##ENV##,service:workbench-ng-sites,resource_name:post_/api/sites}.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },
+            {
+              high_error_rate = [
+                "get_/api/sites/v_version_/sites/_siteprefix"
+              ]
+              query = "sum(last_5m):(sum:trace.aspnet_core.request.errors{env:##ENV##,service:workbench-ng-sites,resource_name:get_/api/sites/v_version_/sites/_siteprefix}.as_count() / sum:trace.aspnet_core.request.hits{env:##ENV##,service:workbench-ng-sites,resource_name:get_/api/sites/v_version_/sites/_siteprefix}.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },
+          ]
+          
+        },
+        {
+          name        = "MFE User Directory"
+          trace       = "aspnet_core"
+          set_we_tag  = false
+          service_name = "workbench-ng-user-directory"
+          notify_non_prod   = "@teams-Sea_Lions_Non_Prod_Alerts_Channel"
+          notify_prod       = "@teams-Sea_Lions_Prod_Alerts_Channel"
+          notify_her_monitors = "@SeaLions-Monitoring-Notifications@groups.pwc.com"
+          tag_ciid = {
+            global = "CI117010533"
+            us = "CI117163261"
+            au = "CI117163264"
+            eu = "CI117163267"
+            sg = "CI117163269"
+          }
+          synthetic_test_url_prefix = "workbench-ng"
+          synthetics_mon_priority   = {}
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com/api/user-directory/v1/health"
+              type       = "health"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = []
+          
+        },
+        {
+          name        = "WB MYDATA API"
+          trace       = "aspnet_core"
+          set_we_tag  = false
+          service_name = "wb-mydata-api"
+          notify_non_prod   = "@teams-Sea_Lions_Non_Prod_Alerts_Channel"
+          notify_prod       = "@teams-Sea_Lions_Prod_Alerts_Channel"
+          notify_her_monitors = "@SeaLions-Monitoring-Notifications@groups.pwc.com"
+          tag_ciid = {
+            global = "CI117163287"
+            us = "CI117163293"
+            au = "CI117163289"
+            eu = "CI117163291"
+            sg = "CI117163295"
+          }
+          synthetic_test_url_prefix = "wb-mydata-api"
+          synthetics_mon_priority   = {}
+          synthetic_test = [
+            {
+              url_suffix   = "-pwclabs.pwcglb.com"
+              type         = "ssl"
+            },
+            {
+              url_suffix = "-pwclabs.pwcglb.com/api/v1/health"
+              type       = "health"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = [
+            {
+              high_error_rate = [
+                "get_/api/v1/workspace/_workspaceid_/file-system"
+              ]
+              query = "sum(last_5m):(sum:trace.aspnet_core.request.errors{env:##ENV##,service:wb-mydata-api,resource_name:get_/api/v1/workspace/_workspaceid_/file-system}.as_count() / sum:trace.aspnet_core.request.hits{env:##ENV##,service:wb-mydata-api,resource_name:get_/api/v1/workspace/_workspaceid_/file-system}.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+
+            },
+          ]
+        },
+        {
+          name        = "MFE Workspace Context Adapter"
+          trace       = "aspnet_core"
+          set_we_tag  = false
+          service_name = "workbench-ng-workspace-context-adapter"
+          notify_non_prod   = "@teams-Sea_Lions_Non_Prod_Alerts_Channel"
+          notify_prod       = "@teams-Sea_Lions_Prod_Alerts_Channel"
+          notify_her_monitors = "@SeaLions-Monitoring-Notifications@groups.pwc.com"
+          tag_ciid = {
+            global = "CI117010535"
+            us = "CI117163271"
+            au = "CI117163273"
+            eu = "CI117163275"
+            sg = "CI117163277"
+          }
+          synthetic_test_url_prefix = "workbench-ng"
+          synthetics_mon_priority   = {}
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com/api/workspace-context-adapter/v1/health"
+              type       = "health"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = [
+            {
+              high_error_rate = [
+                "get_/api/internal/workspace-context-adapter/v_version_/workspaces"
+              ]
+              query = "sum(last_5m):(sum:trace.aspnet_core.request.errors{env:##ENV##,service:workbench-ng-workspace-context-adapter,resource_name:get_/api/internal/workspace-context-adapter/v_version_/workspaces}.as_count() / sum:trace.aspnet_core.request.hits{env:##ENV##,service:workbench-ng-workspace-context-adapter,resource_name:get_/api/internal/workspace-context-adapter/v_version_/workspaces}.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },
+          ]
+        }      
+      ]
+    },    
+    team_5 = {
+      team_name = "TEAM_NAME_4"
+      services = [
+        #autz service
+        {
+          name        = "autz"
+          trace       = "servlet"
+          set_we_tag  = true
+          service_name = null
+          notify_non_prod   = ""
+          notify_prod       = ""
+          notify_her_monitors = ""
+          tag_ciid = {
+            us = "CI116457257"
+            au = "CI116457259"
+            eu = "CI116457261"
+            sg = "CI116457263"
+          }
+          synthetic_test_url_prefix = "autz-service"
+          synthetics_mon_priority   = {}
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com/api/v1/actuator/health"
+              type       = "health"
+            },
+            {
+              url_suffix = "-pwclabs.pwcglb.com"
+              type       = "ssl"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = [
+            {
+              high_error_rate = [
+                "get_/authorize/service/_servicename_/users/_guid",
+                "get_/authorize/users/_guid_/services"
+              ]
+              query = null
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },
+          ] 
+        },
+        {
+          name        = "dns"
+          trace       = "servlet"
+          set_we_tag  = false
+          service_name = null
+          notify_non_prod   = ""
+          notify_prod       = ""
+          notify_her_monitors = ""
+          tag_ciid = {
+            us = "CI116457291"
+            au = "CI116457293"
+            eu = "CI116457295"
+            sg = "CI116457297"
+          }
+          synthetic_test_url_prefix = "dns-service"
+          synthetics_mon_priority   = {}
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com/api/v1/actuator/health"
+              type       = "health"
+            },
+            {
+              url_suffix = "-pwclabs.pwcglb.com"
+              type       = "ssl"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = [
+            {
+              high_error_rate = [
+                "post_/dns",
+                "delete_/dns",
+                "get_/build/info",
+                "get_/dns/checkrecord",
+                "get_/dns/resolvehost",
+              ]
+              query = null
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            }
+          ]        
+        },
+        #kv-store ##add APM Monitors
+        {
+          name        = "kv store"
+          trace       = "servlet"
+          set_we_tag  = false
+          service_name = null
+          notify_non_prod   = ""
+          notify_prod       = ""
+          notify_her_monitors = ""
+          tag_ciid = {
+            us = "CI116457346"
+            au = "CI116457348"
+            eu = "CI116457350"
+            sg = "CI116457352"
+          }
+          synthetic_test_url_prefix = "kv-store"
+          synthetics_mon_priority   = {}
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com/api/v1/actuator/health"
+              type       = "health"
+            },
+            {
+              url_suffix = "-pwclabs.pwcglb.com"
+              type       = "ssl"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = []
+        
+        },
+        #authz-service  
+        {
+          name        = "authz"
+          trace       = "servlet"
+          set_we_tag  = false
+          service_name = null
+          notify_non_prod   = ""
+          notify_prod       = ""
+          notify_her_monitors = ""
+          tag_ciid = {
+            us = "CI116457257"
+            au = "CI116457259"
+            eu = "CI116457261"
+            sg = "CI116457263"
+          }
+          synthetic_test_url_prefix = "authz-service"
+          synthetics_mon_priority   = {}
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com/api/v1/actuator/health"
+              type       = "health"
+            },
+            {
+              url_suffix = "-pwclabs.pwcglb.com"
+              type       = "ssl"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = [
+            {
+              high_error_rate = [
+                "get_/usercontexts/user/_userid_/context/_contextid",
+                "post_/usercontexts/batch"
+              ]
+              query = null
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },
+          ]
+        },
+        #dp-approval-service #noot belongs to Dolphins 
+        {
+          name        = "DP Approval"
+          trace       = "servlet"
+          set_we_tag  = true
+          service_name = null
+          notify_non_prod   = ""
+          notify_prod       = ""
+          notify_her_monitors = ""
+          tag_ciid = {
+            global = "CI117010547"
+            us = "CI117163165"
+            au = "CI117163167"
+            eu = "CI117163169"
+            sg = "CI117163171"
+          }
+          synthetic_test_url_prefix = "dp-approval-service"
+          synthetics_mon_priority   = {}
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com/api/v1/actuator/health"
+              type       = "health"
+            },
+            {
+              url_suffix = "-pwclabs.pwcglb.com"
+              type       = "ssl"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = []
+          
+        },
+        #preference-service
+        {
+          name        = "Preference"
+          trace       = "servlet"
+          set_we_tag  = false
+          service_name = null
+          notify_non_prod   = ""
+          notify_prod       = ""
+          notify_her_monitors = ""
+          tag_ciid = {
+            global = "CI114724037"
+            us     = "CI116457375"
+            eu     = "CI116457379"
+            au     = "CI116457377"
+            sg     = "CI116457381"
+          }
+          synthetic_test_url_prefix = "preference-service"
+          synthetics_mon_priority   = {}
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com/api/v1/actuator/health"
+              type       = "health"
+            },
+            {
+              url_suffix = "-pwclabs.pwcglb.com"
+              type       = "ssl"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = [
+            {
+              high_error_rate = [
+                "get_/preferences/contexts",
+                "get_/preferences/users",
+                "get_/preferences/country",
+                "get_/preferences/contexts/preferenceNames",
+                "get_/preferences/users/preferenceNames",
+                "get_/preferences/country/preferenceNames"
+              ]
+              query = null
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            }]
+          
+          
+        },
+        #workspace-asset-mgmt
+        {
+          name        = "workspace asset mgmt"
+          trace       = "servlet"
+          set_we_tag  = false
+          service_name = null
+          notify_non_prod   = ""
+          notify_prod       = ""
+          notify_her_monitors = ""
+          tag_ciid = {
+            us = "CI116457415"
+            au = "CI116457417"
+            eu = "CI116457419"
+            sg = "CI116457421"
+          }
+          synthetic_test_url_prefix = "workspace-asset-mgmt"
+          synthetics_mon_priority   = {}
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com/api/v1/swagger-ui/index.html"
+              type       = "health"
+            },
+            {
+              url_suffix = "-pwclabs.pwcglb.com"
+              type       = "ssl"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = [
+            {
+              high_error_rate = [
+                "get_/assetaccess/_id",
+                "get_/assetaccess/asset/_assetid",
+                "get_/client-requests/_clientrequestid_/assets",
+                "get_/workspaces/_workspaceid_/client-requests",
+                "post_/assetaccess/_workspaceid_/assets/search",
+              ]
+              query = null
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.2", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            }
+          ]
+          
+        },
+        #service-provisioning-api
+        {
+          name        = "Service Provisioning"
+          trace       = "servlet"
+          set_we_tag  = true
+          service_name = null
+          notify_non_prod   = ""
+          notify_prod       = ""
+          notify_her_monitors = ""
+          tag_ciid = {
+            us = "CI116457383"
+            au = "CI116457385"
+            eu = "CI116457387"
+            sg = "CI116457389"
+          }
+          synthetic_test_url_prefix = "service-provisioning-api"
+          synthetics_mon_priority   = {}
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com/api/v1/actuator/health"
+              type       = "health"
+            },
+            {
+              url_suffix = "-pwclabs.pwcglb.com"
+              type       = "ssl"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = [
+            {
+              high_error_rate = [
+                "get_/serviceprovisioning/engagements/_engagementid_/features",
+                "post_/serviceprovisioning/provisionservice/engagements/_engagementid_/features/_featureid",
+                "get_/serviceprovisioning/engagements/_engagementid_/feature-status"
+              ]
+              query = null
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.5", eu_prod = "0.2", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            }
+          ]
+          
+        },
+        #dp-idbroker
+        {
+          name        = "idbroker"
+          trace       = "servlet"
+          set_we_tag  = false
+          service_name = null
+          notify_non_prod   = ""
+          notify_prod       = ""
+          notify_her_monitors = ""
+          tag_ciid = {
+            us = "CI116457338"
+            au = "CI116457340"
+            eu = "CI116457342"
+            sg = "CI116457344"
+          }
+          synthetic_test_url_prefix = "dp-idbroker"
+          synthetics_mon_priority   = {}
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com/api/v1/actuator/health"
