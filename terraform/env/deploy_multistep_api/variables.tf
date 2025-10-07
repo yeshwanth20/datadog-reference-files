@@ -875,4 +875,2461 @@ variable "synthetics_multi_api_test_val" {
                           "eustg",
                           "euprod",
                           "usprod",
-                          "auprod"
+                          "auprod"
+##discontinued
+
+    team_4 = {
+
+      team_name = "TEAM_NAME_4"
+
+      synthetics = [
+
+        {
+
+          tag_ciid = {
+
+            us = "CI116457421"
+
+            au = "CI41101427"
+
+            eu = "CI41101419"
+
+            sg = "CI58685029"
+
+          }
+
+          service_name              = "ms-teams-wrapper"
+
+          synthetic_test_url_prefix = "workbench"
+
+          synthetics_monitor = [
+
+            {
+
+              name    = "Provisioning ms-teams-wrapper"
+
+              message = "ms-teams-wrapper Provisioning Failed"
+
+              notify = "@opsgenie-Notifier"
+
+              #synthetics_test_base_var = {
+
+              #  dev    = "workbench-us-dev.lower-pwclabs.pwcglb.com"
+
+              #  qa     = "workbench-us-qa.lower-pwclabs.pwcglb.com"
+
+              #  usstg  = "workbench-us-stg.np-pwclabs.pwcglb.com"
+
+              #  eustg  = "workbench-eu-stg.np-pwclabs.pwcglb.com"
+
+              #  euprod = "workbench-eu.pwclabs.pwcglb.com"
+
+              #  usprod = "workbench-us.pwclabs.pwcglb.com"
+
+              #  auprod = "workbench-au.pwclabs.pwcglb.com"
+
+              #}
+
+              config_variable = [
+
+                {
+
+                  type = "text"
+
+                  name = "WORKSPACE_NAME"
+
+                  pattern = "SRE_Workspace_{{ date(0d, DD_MM_YYYY_HH_MM) }}_{{ alphanumeric(5) }}"
+
+                },
+
+                {
+
+                  type = "global"
+
+                  name = "wexp-bearer"
+
+                  id = "id"
+
+                },
+
+                {
+
+                  type = "global"
+
+                  name = "x-csrf-token"
+
+                  id = "id"
+
+                },
+
+                {
+
+                  type = "global"
+
+                  name = "Authorization"
+
+                  id = "id"
+
+                },   
+
+              ]
+
+              options_list_tick_interval = 7200
+
+              options_list_min_location_failed = 1
+
+              options_list_min_failure_duration = 7200
+
+              options_list_monitor_priority = 2
+
+              api_step = [
+
+                {
+
+                  url_suffix = "-pwclabs.pwcglb.com"
+
+                  step = [
+
+                    {
+
+                      name    = "Create an Engagement"
+
+                      subtype = "http"
+
+                      assertion = [
+
+                        {
+
+                          type           = "statusCode"
+
+                          operator       = "is"
+
+                          target         = "200"
+
+                          property       = null
+
+                          targetjsonpath = []
+
+                        },
+
+                      ]
+
+                      request_definition = {
+
+                        method                  = "POST"
+
+                        url_suffix              = "/api/v1/engagements"
+
+                        no_saving_response_body = false
+
+                        body                    = <<-EOD
+
+                            {
+
+                              "name": "{{ WORKSPACE_NAME }}",
+
+                              "engagementType": "Other",
+
+                              "clientId": "2e16783a-6a0b-4073-94b3-5bbf05d8bf60",
+
+                              "clientName": "The Boring Company",
+
+                              "userId": "wdatadogte001",
+
+                              "workspaceType": "Client Engagement",
+
+                              "territory": "United States",
+
+                              "wbsCode": "01234567890",
+
+                              "lineOfService": "Assurance",
+
+                              "apptioId": "xx000",
+
+                              "dataConsentLevel": "",
+
+                              "dataClassification": "DC2",
+
+                              "teamMembers": [],
+
+                              "leader": {
+
+                                  "pwcGuid": "wdatadogte001",
+
+                                  "name":"workbench datadogtest",
+
+                                  "email":"workbench.datadogtest@us.pwc.com",
+
+                                  "roles": [
+
+                                      "Leader"        ]
+
+                              },
+
+                              "startDate": "11/01/2021",
+
+                              "endDate": "12/31/2021"
+
+                            }
+
+                            EOD
+
+                      }
+
+                      request_headers = {
+
+                        wexp-bearer     = "wexp-bearer"
+
+                        connection      = "keep-alive"
+
+                        content-type    = "application/json"
+
+                        accept-encoding = "gzip, deflate, br"
+
+                        x-csrf-token    = "x-csrf-token"
+
+                        Authorization   = null
+
+                      }
+
+                      extracted_value = [
+
+                        {
+
+                          name = "ENGAGEMENT_ID"
+
+                          type = "http_body"
+
+                          parser = {
+
+                            type  = "json_path"
+
+                            value = "$.data.data.id"
+
+                          }
+
+                        }                        
+
+                      ]
+
+                      retry = [{
+
+                        count    = 5
+
+                        interval = 5000
+
+                      }]
+
+                    },
+
+                    {
+
+                      name          = "GET FEATURE SWITCH"
+
+                      subtype       = "http"
+
+                      allow_failure = true
+
+                      is_critical   = true
+
+                      assertion = [
+
+                        {
+
+                          type           = "statusCode"
+
+                          operator       = "is"
+
+                          target         = "200"
+
+                          property       = null
+
+                          targetjsonpath = []
+
+                        }
+
+                      ]
+
+                      request_definition = {
+
+                        method                  = "GET"
+
+                        url_suffix              = "/api/v1/engagements/{{ ENGAGEMENT_ID }}/features"
+
+                        no_saving_response_body = false
+
+                        body                    = null
+
+                      }
+
+                      request_query = {
+
+                        searchName = "Microsoft Teams"
+
+                      }
+
+
+
+                      request_headers = {
+
+                        wexp-bearer     = "wexp-bearer"
+
+                        content-type    = "application/json"
+
+                        x-csrf-token    = "x-csrf-token"
+
+                        accept-encoding = "gzip, deflate, br"
+
+                        accept          = "application/json"
+
+                        connection      = null
+
+                        Authorization   = null
+
+                      }
+
+                      extracted_value = [
+
+                        {
+
+                          name = "FEATURE_ID"
+
+                          type = "http_body"
+
+                          parser = {
+
+                            type  = "json_path"
+
+                            value = "$.data[0].definition.featureId"
+
+                          }
+
+                        }
+
+                      ]
+
+                      retry = [{
+
+                        count    = 5
+
+                        interval = 5000
+
+                      }]
+
+                    },
+
+                    {
+
+                      name          = "Provision MS Teams Wrapper service"
+
+                      subtype       = "http"
+
+                      allow_failure = true
+
+                      is_critical   = true
+
+                      assertion = [
+
+                        {
+
+                          type           = "statusCode"
+
+                          operator       = "is"
+
+                          target         = "200"
+
+                          property       = null
+
+                          targetjsonpath = []
+
+                        },
+
+                        {
+
+                          type     = "body"
+
+                          operator = "validatesJSONPath"
+
+                          target   = null
+
+                          property = null
+
+                          targetjsonpath = [
+
+                            {
+
+                              operator    = "contains"
+
+                              jsonpath    = "$.data.status"
+
+                              targetvalue = "PROVISIONING"
+
+                            }
+
+                          ]
+
+                        },
+
+                      ]
+
+                      request_definition = {
+
+                        method                  = "POST"
+
+                        url_suffix              = "/api/v1/engagements/{{ ENGAGEMENT_ID }}/features"
+
+                        no_saving_response_body = false
+
+                        body                    = <<-EOD
+
+                            {                           
+
+                              "formFields": [
+
+                                              {
+
+                                                  "formId": "2",
+
+                                                  "isEditable": false,
+
+                                                  "isSelected": false,
+
+                                                  "label": "I have read and agree to follow the Microsoft Teams Business Rules",
+
+                                                  "name": "confirm2",
+
+                                                  "type": "CHECKBOX",
+
+                                                  "validation": {
+
+                                                      "isRequired": true
+
+                                                    }
+
+                                              }
+
+                                          ],
+
+                              "featureId": "{{ FEATURE_ID }}",
+
+                              "engagementId":"{{ ENGAGEMENT_ID }}"                            
+
+                            }
+
+                            EOD
+
+                        allow_insecure          = true
+
+                      }
+
+
+
+                      request_headers = {
+
+                        wexp-bearer     = "wexp-bearer"
+
+                        content-type    = "application/json"
+
+                        x-csrf-token    = "x-csrf-token"
+
+                        accept-encoding = null
+
+                        connection      = null
+
+                        Authorization   = null
+
+                      }
+
+                      extracted_value = []
+
+                    },
+
+                    {
+
+                      name    = "Wait for 3 minutes"
+
+                      subtype = "wait"
+
+                      value   = 180
+
+                      assertion = []                     
+
+                    }, 
+
+                    {
+
+                      name    = "Wait for 2 minutes"
+
+                      subtype = "wait"
+
+                      value   = 120
+
+                      assertion = []                     
+
+                    },
+
+                    {
+
+                    name    = "Check provisioning"
+
+                    allow_failure = true
+
+                    is_critical   = true
+
+                    subtype = "http"
+
+                    assertion = [
+
+                      {
+
+                        type           = "statusCode"
+
+                        operator       = "is"
+
+                        target         = "200"
+
+                        property       = null
+
+                        targetjsonpath = []
+
+                      },
+
+                      {
+
+                        type           = "header"
+
+                        operator       = "is"
+
+                        target         = "application/json"
+
+                        property       = "content-type"
+
+                        targetjsonpath = []
+
+                      },
+
+                      {
+
+                        type     = "body"
+
+                        operator = "validatesJSONPath"
+
+                        target   = null
+
+                        property = null
+
+                        targetjsonpath = [
+
+                          {
+
+                            operator    = "is"
+
+                            jsonpath    = "$[0].status"
+
+                            targetvalue = "READY"
+
+                          }
+
+                        ]
+
+                      },                      
+
+                    ]
+
+                    request_definition = {
+
+                      method                  = "GET"
+
+                      synthetic_test_url_prefix = "service-provisioning-api"
+
+                      url_suffix              = "/api/v1/serviceProvisioning/engagements/{{ ENGAGEMENT_ID }}/feature-status"
+
+                      no_saving_response_body = false
+
+                      body                    = null
+
+                    }
+
+
+
+                    request_headers = {
+
+                      wexp-bearer     = null
+
+                      content-type    = null
+
+                      x-csrf-token    = null
+
+                      accept-encoding = null
+
+                      connection      = null
+
+                      Authorization   = "Authorization"
+
+                    }
+
+                    extracted_value = []
+
+                      retry = [{
+
+                      count    = 5
+
+                      interval = 5000
+
+                    }]
+
+                    },                   
+
+                    {
+
+                    name    = "Archive Engagement"
+
+                    subtype = "http"
+
+                    allow_failure = true
+
+                    is_critical   = false
+
+                    assertion = [
+
+                      {
+
+                        type           = "statusCode"
+
+                        operator       = "is"
+
+                        target         = "200"
+
+                        property       = null
+
+                        targetjsonpath = []
+
+                      },
+
+                      {
+
+                        type     = "body"
+
+                        operator = "validatesJSONPath"
+
+                        target   = null
+
+                        property = null
+
+                        targetjsonpath = [
+
+                          {
+
+                            operator    = "contains"
+
+                            jsonpath    = "$.data.active"
+
+                            targetvalue = "false"
+
+                          }
+
+                        ]
+
+                      },
+
+                    ]
+
+                    request_definition = {
+
+                      method                  = "PATCH"
+
+                      url_suffix              = "/api/v1/engagements/{{ ENGAGEMENT_ID }}/archive"
+
+                      no_saving_response_body = false
+
+                      body                    = null
+
+                    }
+
+
+
+                    request_headers = {
+
+                      wexp-bearer     = "wexp-bearer"
+
+                      content-type    = " application/json"
+
+                      x-csrf-token    = "x-csrf-token"
+
+                      accept-encoding = null
+
+                      connection      = null
+
+                      Authorization   = null
+
+                    }
+
+                    extracted_value = []
+
+                    },
+
+                    {
+
+                      name    = "Delete Engagement"
+
+                      subtype = "http"
+
+                      assertion = [
+
+                        {
+
+                          type           = "statusCode"
+
+                          operator       = "is"
+
+                          target         = "200"
+
+                          property       = null
+
+                          targetjsonpath = []
+
+                        },
+
+                        {
+
+                          type     = "body"
+
+                          operator = "validatesJSONPath"
+
+                          target   = null
+
+                          property = null
+
+                          targetjsonpath = [
+
+                            {
+
+                              operator    = "contains"
+
+                              jsonpath    = "$.data"
+
+                              targetvalue = "deletion"
+
+                            }
+
+                          ]
+
+                        },
+
+                      ]
+
+                      request_definition = {
+
+                        method                  = "DELETE"
+
+                        url_suffix              = "/api/v1/engagements/{{ ENGAGEMENT_ID }}"
+
+                        no_saving_response_body = true
+
+                        body                    = null
+
+                      }
+
+
+
+                      request_headers = {
+
+                        wexp-bearer     = "wexp-bearer"
+
+                        content-type    = "application/json"
+
+                        x-csrf-token    = "x-csrf-token"
+
+                        accept-encoding = null
+
+                        connection      = null
+
+                        Authorization   = null
+
+                      }
+
+                      extracted_value = []
+
+                    }
+
+                  ]
+
+                  regions_envs : [
+
+                    #{ location = "us", env = "dev", create_test = true },
+
+                    # { location = "us", env = "qa", create_test = true },
+
+                    { location = "us", env = "stg", create_test = true },
+
+                    { location = "eu", env = "stg", create_test = true },
+
+                    { location = "eu", env = "prod", create_test = true },
+
+                    { location = "us", env = "prod", create_test = true },
+
+                    { location = "au", env = "prod", create_test = true },
+
+                    #{ location = "sg", env = "prod", create_test = true }
+
+                  ]
+
+                }
+
+              ]
+
+            }
+
+          ]
+
+        },
+
+        {
+
+          tag_ciid = {
+
+            us = "CI43816433"
+
+            au = "CI58684983"
+
+            eu = "CI58684985"
+
+            sg = "CI58684987"
+
+          }
+
+          service_name              = "wbservice-databricks"
+
+          synthetic_test_url_prefix = "workbench"
+
+          synthetics_monitor = [
+
+            {
+
+              name    = "Provisioning Databricks Citizen"
+
+              message = "Databrick Provisioning failed"
+
+              notify = "@pallab.p.ray@pwc.com @opsgenie-Notifier"
+
+              #synthetics_test_base_var = {
+
+              #}
+
+              config_variable = [
+
+                {
+
+                  type = "text"
+
+                  name = "WORKSPACE_NAME"
+
+                  pattern = "SRE_Workspace_{{ date(0d, DD_MM_YYYY_HH_MM) }}_{{ alphanumeric(5) }}"
+
+                },
+
+                {
+
+                  type = "global"
+
+                  name = "wexp-bearer"
+
+                  id = "id"
+
+                },
+
+                {
+
+                  type = "global"
+
+                  name = "x-csrf-token"
+
+                  id = "id"
+
+                },
+
+                {
+
+                  type = "global"
+
+                  name = "Authorization"
+
+                  id = "id"
+
+                },
+
+                {
+
+                  type = "custom"
+
+                  name = "DATABRICKS_FEATURE_ID"
+
+                  id = "9ca07f2d-b47b-4d42-acfe-71c32fd3c163"
+
+                },                
+
+              ]
+
+              
+
+              options_list_tick_interval = 7200
+
+              options_list_min_location_failed = 1
+
+              options_list_min_failure_duration = 7200
+
+              options_list_monitor_priority = 3
+
+              api_step = [
+
+                {
+
+                  url_suffix = "-pwclabs.pwcglb.com"
+
+                  step = [
+
+                    {
+
+                      name    = "Create Engagement"
+
+                      subtype = "http"
+
+                      assertion = [
+
+                        {
+
+                          type           = "statusCode"
+
+                          operator       = "is"
+
+                            target         = "200"
+
+                          property       = null
+
+                          targetjsonpath = []
+
+                        },                        
+
+                      ]
+
+                      request_definition = {
+
+                        method     = "POST"
+
+                        #synthetic_test_url_prefix = "workbench"
+
+                        url_suffix = "/api/v1/engagements"
+
+                        url_suffix_value = []
+
+                        no_saving_response_body = false
+
+                        body = "file_path"
+
+                        body_file_path = "data/Databricks_Provisioning/Workbench_DB_ENG_Creation"
+
+                      }
+
+                      request_headers = {
+
+                        wexp-bearer     = "wexp-bearer"
+
+                        connection      = null
+
+                        content-type    = "application/json"
+
+                        accept-encoding = null
+
+                        x-csrf-token    = "x-csrf-token"
+
+                        Authorization   = null
+
+                      }
+
+                      extracted_value = [
+
+                        {
+
+                          name = "ENGAGEMENT_ID"
+
+                          type = "http_body"
+
+                          parser = {
+
+                            type  = "json_path"
+
+                            value = "$.data.data.id"
+
+                          }
+
+                        }
+
+                      ]
+
+                    },
+
+                    {
+
+                      name    = "Provision Databricks"
+
+                      allow_failure = true
+
+                      is_critical   = true
+
+                      subtype = "http"
+
+                      assertion = [
+
+                        {
+
+                          type           = "statusCode"
+
+                          operator       = "is"
+
+                          target         = "200"
+
+                          property       = null
+
+                          targetjsonpath = []
+
+                        },                        
+
+                      ]
+
+                      request_definition = {
+
+                        method                  = "POST"
+
+                        url_suffix              = "/api/v1/engagements/{{ ENGAGEMENT_ID }}/features"
+
+                        no_saving_response_body = false
+
+                        body                    = "multi_file_path"
+
+                        body_file_path          = null
+
+                        body_file_path_value    = [
+
+                          # "data/Databricks_Provisioning/Databricks_Citizen_Provisioning_body_QA",
+
+                          "data/Databricks_Provisioning/Databricks_Citizen_Provisioning_body_PROD_US",
+
+                          "data/Databricks_Provisioning/Databricks_Citizen_Provisioning_body_PROD_EU",
+
+                          "data/Databricks_Provisioning/Databricks_Citizen_Provisioning_body_PROD_AU"
+
+                        ] 
+
+                        body_file_path_key      = [
+
+                          # "qa",
+
+                          "usprod",
+
+                          "euprod",
+
+                          "auprod"
+
+                        ] 
+
+                      }
+
+
+
+                      request_headers = {
+
+                        wexp-bearer     = "wexp-bearer"
+
+                        content-type    = "application/json"
+
+                        x-csrf-token    = "x-csrf-token"
+
+                        accept-encoding = null
+
+                        connection      = null
+
+                        Authorization   = null
+
+                      }
+
+                      extracted_value = []
+
+                    },
+
+                    {
+
+                      name    = "Check provisioning"
+
+                      allow_failure = true
+
+                      is_critical   = false
+
+                      subtype = "http"
+
+                      assertion = [
+
+                        {
+
+                          type           = "statusCode"
+
+                          operator       = "is"
+
+                          target         = "200"
+
+                          property       = null
+
+                          targetjsonpath = []
+
+                        },
+
+                        {
+
+                          type           = "header"
+
+                          operator       = "is"
+
+                          target         = "application/json"
+
+                          property       = "content-type"
+
+                          targetjsonpath = []
+
+                        },
+
+                        {
+
+                          type     = "body"
+
+                          operator = "validatesJSONPath"
+
+                          target   = null
+
+                          property = null
+
+                          targetjsonpath = [
+
+                            {
+
+                              operator    = "is"
+
+                              jsonpath    = "$[0].status"
+
+                              targetvalue = "READY"
+
+                            }
+
+                          ]
+
+                        },                      
+
+                      ]
+
+                      request_definition = {
+
+                        method                  = "GET"
+
+                        synthetic_test_url_prefix = "service-provisioning-api"
+
+                        url_suffix              = "/api/v1/serviceProvisioning/engagements/{{ ENGAGEMENT_ID }}/feature-status"
+
+                        no_saving_response_body = false
+
+                        body                    = null
+
+                      }
+
+
+
+                      request_headers = {
+
+                        wexp-bearer     = null
+
+                        content-type    = null
+
+                        x-csrf-token    = null
+
+                        accept-encoding = null
+
+                        connection      = null
+
+                        Authorization   = "Authorization"
+
+                      }
+
+                      extracted_value = []
+
+                       retry = [{
+
+                        count    = 5
+
+                        interval = 5000
+
+                      }]
+
+                    },
+
+                    {
+
+                      name    = "Check provisioning"
+
+                      allow_failure = true
+
+                      is_critical   = false
+
+                      subtype = "http"
+
+                      assertion = [
+
+                        {
+
+                          type           = "statusCode"
+
+                          operator       = "is"
+
+                          target         = "200"
+
+                          property       = null
+
+                          targetjsonpath = []
+
+                        },
+
+                        {
+
+                          type           = "header"
+
+                          operator       = "is"
+
+                          target         = "application/json"
+
+                          property       = "content-type"
+
+                          targetjsonpath = []
+
+                        },
+
+                        {
+
+                          type     = "body"
+
+                          operator = "validatesJSONPath"
+
+                          target   = null
+
+                          property = null
+
+                          targetjsonpath = [
+
+                            {
+
+                              operator    = "is"
+
+                              jsonpath    = "$[0].status"
+
+                              targetvalue = "READY"
+
+                            }
+
+                          ]
+
+                        },                      
+
+                      ]
+
+                      request_definition = {
+
+                        method                  = "GET"
+
+                        synthetic_test_url_prefix = "service-provisioning-api"
+
+                        url_suffix              = "/api/v1/serviceProvisioning/engagements/{{ ENGAGEMENT_ID }}/feature-status"
+
+                        no_saving_response_body = false
+
+                        body                    = null
+
+                      }
+
+
+
+                      request_headers = {
+
+                        wexp-bearer     = null
+
+                        content-type    = null
+
+                        x-csrf-token    = null
+
+                        accept-encoding = null
+
+                        connection      = null
+
+                        Authorization   = "Authorization"
+
+                      }
+
+                      extracted_value = []
+
+                       retry = [{
+
+                        count    = 5
+
+                        interval = 5000
+
+                      }]
+
+                    },
+
+                    {
+
+                      name    = "Check provisioning"
+
+                      allow_failure = true
+
+                      is_critical   = false
+
+                      subtype = "http"
+
+                      assertion = [
+
+                        {
+
+                          type           = "statusCode"
+
+                          operator       = "is"
+
+                          target         = "200"
+
+                          property       = null
+
+                          targetjsonpath = []
+
+                        },
+
+                        {
+
+                          type           = "header"
+
+                          operator       = "is"
+
+                          target         = "application/json"
+
+                          property       = "content-type"
+
+                          targetjsonpath = []
+
+                        },
+
+                        {
+
+                          type     = "body"
+
+                          operator = "validatesJSONPath"
+
+                          target   = null
+
+                          property = null
+
+                          targetjsonpath = [
+
+                            {
+
+                              operator    = "is"
+
+                              jsonpath    = "$[0].status"
+
+                              targetvalue = "READY"
+
+                            }
+
+                          ]
+
+                        },                      
+
+                      ]
+
+                      request_definition = {
+
+                        method                  = "GET"
+
+                        synthetic_test_url_prefix = "service-provisioning-api"
+
+                        url_suffix              = "/api/v1/serviceProvisioning/engagements/{{ ENGAGEMENT_ID }}/feature-status"
+
+                        no_saving_response_body = false
+
+                        body                    = null
+
+                      }
+
+
+
+                      request_headers = {
+
+                        wexp-bearer     = null
+
+                        content-type    = null
+
+                        x-csrf-token    = null
+
+                        accept-encoding = null
+
+                        connection      = null
+
+                        Authorization   = "Authorization"
+
+                      }
+
+                      extracted_value = []
+
+                       retry = [{
+
+                        count    = 5
+
+                        interval = 5000
+
+                      }]
+
+                    },
+
+                    {
+
+                      name    = "Check provisioning"
+
+                      allow_failure = true
+
+                      is_critical   = true
+
+                      subtype = "http"
+
+                      assertion = [
+
+                        {
+
+                          type           = "statusCode"
+
+                          operator       = "is"
+
+                          target         = "200"
+
+                          property       = null
+
+                          targetjsonpath = []
+
+                        },
+
+                        {
+
+                          type           = "header"
+
+                          operator       = "is"
+
+                          target         = "application/json"
+
+                          property       = "content-type"
+
+                          targetjsonpath = []
+
+                        },
+
+                        {
+
+                          type     = "body"
+
+                          operator = "validatesJSONPath"
+
+                          target   = null
+
+                          property = null
+
+                          targetjsonpath = [
+
+                            {
+
+                              operator    = "is"
+
+                              jsonpath    = "$[0].status"
+
+                              targetvalue = "READY"
+
+                            }
+
+                          ]
+
+                        },                      
+
+                      ]
+
+                      request_definition = {
+
+                        method                  = "GET"
+
+                        synthetic_test_url_prefix = "service-provisioning-api"
+
+                        url_suffix              = "/api/v1/serviceProvisioning/engagements/{{ ENGAGEMENT_ID }}/feature-status"
+
+                        no_saving_response_body = false
+
+                        body                    = null
+
+                      }
+
+
+
+                      request_headers = {
+
+                        wexp-bearer     = null
+
+                        content-type    = null
+
+                        x-csrf-token    = null
+
+                        accept-encoding = null
+
+                        connection      = null
+
+                        Authorization   = "Authorization"
+
+                      }
+
+                      extracted_value = []
+
+                       retry = [{
+
+                        count    = 5
+
+                        interval = 5000
+
+                      }]
+
+                    },
+
+                    {
+
+                      name    = "Achieve Engagement"
+
+                      allow_failure = true
+
+                      is_critical   = false
+
+                      subtype = "http"
+
+                      assertion = [
+
+                        {
+
+                          type           = "statusCode"
+
+                          operator       = "is"
+
+                          target         = "200"
+
+                          property       = null
+
+                          targetjsonpath = []
+
+                        },
+
+                        {
+
+                          type     = "body"
+
+                          operator = "validatesJSONPath"
+
+                          target   = null
+
+                          property = null
+
+                          targetjsonpath = [
+
+                            {
+
+                              operator    = "contains"
+
+                              jsonpath    = "$.data.active"
+
+                              targetvalue = "false"
+
+                            }
+
+                          ]
+
+                        },                      
+
+                      ]
+
+                      request_definition = {
+
+                        method                  = "PATCH"
+
+                        url_suffix              = "/api/v1/engagements/{{ ENGAGEMENT_ID }}/archive"
+
+                        no_saving_response_body = false
+
+                        body                    = null
+
+                      }
+
+
+
+                      request_headers = {
+
+                        wexp-bearer     = "wexp-bearer"
+
+                        content-type    = "application/json"
+
+                        x-csrf-token    = "x-csrf-token"
+
+                        accept-encoding = null
+
+                        connection      = null
+
+                        Authorization   = null
+
+                      }
+
+                      extracted_value = []
+
+                    },
+
+                    {
+
+                      name    = "Delete Engagement"
+
+                      subtype = "http"
+
+                      assertion = [
+
+                        {
+
+                          type           = "statusCode"
+
+                          operator       = "is"
+
+                          target         = "200"
+
+                          property       = null
+
+                          targetjsonpath = []
+
+                        },
+
+                        {
+
+                          type     = "body"
+
+                          operator = "validatesJSONPath"
+
+                          target   = null
+
+                          property = null
+
+                          targetjsonpath = [
+
+                            {
+
+                              operator    = "contains"
+
+                              jsonpath    = "$.data"
+
+                              targetvalue = "deletion "
+
+                            }
+
+                          ]
+
+                        },                      
+
+                      ]
+
+                      request_definition = {
+
+                        method                  = "DELETE"
+
+                        url_suffix              = "/api/v1/engagements/{{ ENGAGEMENT_ID }}"
+
+                        no_saving_response_body = false
+
+                        body                    = null
+
+                      }
+
+
+
+                      request_headers = {
+
+                        wexp-bearer     = "wexp-bearer"
+
+                        content-type    = "application/json"
+
+                        x-csrf-token    = "x-csrf-token"
+
+                        accept-encoding = null
+
+                        connection      = null
+
+                        Authorization   = null
+
+                      }
+
+                      extracted_value = []
+
+                    },
+
+                  ]
+
+                  regions_envs : [
+
+                    # { location = "us", env = "qa", create_test = true },
+
+                    { location = "us", env = "prod", create_test = true, tag_snow = true },
+
+                    { location = "eu", env = "prod", create_test = true,  tag_snow = true },
+
+                    { location = "au", env = "prod", create_test = true,  tag_snow = true },
+
+                  ]
+
+                }
+
+              ]
+
+            }
+
+          ]
+
+        },
+
+variable "global_variable" {
+
+  default = {
+
+    global_variable = {
+
+      value = [
+
+        {
+
+          name      = "WEXP_BEARER"
+
+          type      = "dynamic"
+
+          test_name = "workbench"
+
+          parse_test_options = [{
+
+            type = "http_body"
+
+            field = null
+
+            parser = [{
+
+              type  = "json_path"
+
+              value = "$.data['wexp-bearer']"
+
+            }]
+
+          }]
+
+          regions_envs = [
+
+            { location = "us", env = "dev", scope = "deploy", create_test = true },
+
+            { location = "us", env = "qa", scope = "deploy", create_test = true },
+
+            { location = "us", env = "stg", scope = "deploy", create_test = true },
+
+            { location = "eu", env = "stg", scope = "deploy", create_test = true },
+
+            { location = "us", env = "prod", scope = "deploy", create_test = true },
+
+            { location = "eu", env = "prod", scope = "deploy", create_test = true },
+
+            { location = "au", env = "prod", scope = "deploy", create_test = true },
+
+          ]
+
+        },
+
+        {
+
+          name      = "X_CSRF_TOKEN"
+
+          type      = "dynamic"
+
+          test_name = "workbench"
+
+          parse_test_options = [{
+
+            type = "http_body"
+
+            parser = [{
+
+              type  = "json_path"
+
+              value = "$.data['x-csrf-token']"
+
+            }]
+
+          }]
+
+          regions_envs = [
+
+            { location = "us", env = "dev", scope = "deploy", create_test = true },
+
+            { location = "us", env = "qa", scope = "deploy", create_test = true },
+
+            { location = "us", env = "stg", scope = "deploy", create_test = true },
+
+            { location = "eu", env = "stg", scope = "deploy", create_test = true },
+
+            { location = "us", env = "prod", scope = "deploy", create_test = true },
+
+            { location = "eu", env = "prod", scope = "deploy", create_test = true },
+
+            { location = "au", env = "prod", scope = "deploy", create_test = true },
+
+          ]
+
+        },
+
+        
+
+        {
+
+          name      = "BEARER"
+
+          type      = "dynamic"
+
+          test_name = "idbroker"
+
+          parse_test_options = [{
+
+            type = "http_header"
+
+            field = "authorization"
+
+            parser = [{
+
+              type  = "raw"              
+
+            }]
+
+          }]
+
+          regions_envs = [
+
+            { location = "us", env = "dev", scope = "deploy", create_test = true },
+
+            { location = "us", env = "qa", scope = "deploy", create_test = true },
+
+            { location = "us", env = "stg", scope = "deploy", create_test = true },
+
+            { location = "eu", env = "stg", scope = "deploy", create_test = true },
+
+            { location = "us", env = "prod", scope = "deploy", create_test = true },
+
+            { location = "eu", env = "prod", scope = "deploy", create_test = true },
+
+            { location = "au", env = "prod", scope = "deploy", create_test = true },
+
+          ] 
+
+        },
+
+
+
+        {
+
+          name      = "POWERBI_FEATURE_ID"
+
+          type      = "static"
+
+          value     = "T678faae9-12e5-47ae-89da-2ed41bee8b9fvizpbi"
+
+          regions_envs = [
+
+            { location = "us", env = "prod", scope = "deploy", create_test = true },
+
+          ] 
+
+        },
+
+
+
+      ] 
+
+    }
+
+  }
+
+}
+
+
+
+variable "watchdog_monitors" {
+
+  description = "List of Watchdog monitors"
+
+  type = map(any)
+
+  default = {
+
+    team_1 = {
+
+      team_name = "TEAM_NAME_3"
+
+      monitors = [
+
+        {
+
+          name = "Watchdog monitors for Sea Lions"
+
+          notify = "@teams-Sea_Lions_Prod_Alerts_Channel"
+
+          priority = 4
+
+          tag_ciid = {
+
+            global = ""
+
+            us     = ""
+
+            au     = ""
+
+            eu     = ""
+
+            sg     = ""
+
+          }
+
+          story_category = [
+
+            "apm",
+
+            "logs"
+
+          ]
+
+          services = [
+
+            "wb-mydata-api",
+
+            "workbench-ng-analytics",
+
+            "workbench-ng-app-configuration",
+
+            "workbench-ng-authorization",
+
+            "workbench-ng-content",
+
+            "workbench-ng-gallery",
+
+            "workbench-ng-microfrontends",
+
+            "workbench-ng-pages",
+
+            "workbench-ng-sites",
+
+            "workbench-ng-user-directory",
+
+            "workbench-ng-workspace-context-adapter"
+
+          ]
+
+          envs = [
+
+            "us-dev-deploy",
+
+            "us-qa-deploy",
+
+            "us-stage-deploy",
+
+            "eu-stage-deploy",
+
+            "us-prod-deploy",
+
+            "eu-prod-deploy",
+
+            "au-prod-green",
+
+            "sg-prod-deploy"
+
+          ]
+
+        }
+
+      ]
+
+    }
+
+  }
+
+}
+
+
+
+variable "paas_monitors" {
+
+  default = {
+
+    team_1 = {
+
+      team_name = "TEAM_NAME_1"
+
+      paas = [
+
+        {
+
+          service = "mysql"
+
+          subscription_name = [
+
+            "pzi-gxeu-p-sub162",
+
+            "pzi-gxus-p-sub312"
+
+          ]
+
+          monitors = [
+
+            {
+
+              alert_name = "MYSQL-PAAS SQL Server Count Exceeds Threshold"
+
+              query = "avg(last_10m):sum:azure.sql_servers.count{subscription_name: <subscription_name>} by {region} > 200"
+
+              message = "SQL Server Count in {{region}} Exceeds defined Threshold"
+
+              critical = 200
+
+              critical_recovery = null
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 3
+
+              notify = "@teams-Orca_Prod_Alerts_Channel"
+
+              create_monitor = true
+
+            },
+
+            {
+
+              alert_name = "MYSQL-PAAS SQL Database per server Count Exceeds Threshold"
+
+              query = "avg(last_10m):sum:azure.sql_servers_databases.count{subscription_name: <subscription_name>} by {region} > 4000"
+
+              message = "SQL Database per server Count in {{region}} Exceeds defined Threshold"
+
+              critical = 4000
+
+              critical_recovery = null
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 3
+
+              notify = "@teams-Orca_Prod_Alerts_Channel"
+
+              create_monitor = true
+
+            }
+
+          ]
+
+        },
+
+        {
+
+          service = "couchbase"
+
+          couchbase_env = [
+
+            "us-stage-deploy", 
+
+            "eu-stage-deploy", 
+
+            "us-prod-deploy", 
+
+            "eu-prod-deploy",
+
+            "sg-prod-deploy",
+
+            "au-prod-green"
+
+          ]
+
+          monitors = [
+
+            {
+
+              alert_name = "Vizinsights connection to Couchbase - High Error Rate"
+
+              query = "sum(last_10m):(sum:trace.couchbase.call.errors{env:<couchbase_env> , peer.db.system:couchbase , base_service:vizinsights}.as_count() / sum:trace.couchbase.call.hits{env:<couchbase_env> , peer.db.system:couchbase , base_service:vizinsights}.as_count()) > 0.25"
+
+              message = "Vizinsights connection to Couchbase error rate is too high in {{env}}"
+
+              critical = 0.25
+
+              critical_recovery = 0.20
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 3
+
+              notify = "@teams-Orca_Prod_Alerts_Channel"
+
+              create_monitor = true
+
+            }
+
+          ]
+
+        }  
+
+      ]
+
+    },
+
+    team_2 = {
+
+      team_name = "TEAM_NAME_7"
+
+      paas = [
+
+        {
+
+          service = "eventhub"
+
+          eh-name = [
+
+            ##"pzi-gxus-n-ehb-evhb-s001",
+
+            ##"pzi-gxeu-g-ehb-evhb-s001,
+
+            "pzi-gxau-p-ehb-evhb-p001",
+
+            "pzi-gxeu-p-ehb-evhb-p001",
+
+            "pzi-gxus-p-ehb-evhb-p001",
+
+            "sg-prod-platform-eventhub-ns-001"
+
+          ]
+
+          monitors = [
+
+            {
+
+              alert_name = "EVENTHUB-PAAS User Errors Count Exceeds Threshold"
+
+              query = "avg(last_10m):sum:azure.eventhub_namespaces.user_errors.count{name:<eh-name>} > 3"
+
+              message = "{{name}} Event hub user errors exceeds defined threshold. Subscription: {{subscription_name}}"
+
+              critical = 3
+
+              critical_recovery = 2
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 3
+
+              notify = "@pagerduty-DD_DataPlatform_SRE"
+
+              create_monitor = true
+
+            },
+
+            {
+
+              alert_name = "EVENTHUB-PAAS Server Errors Count Exceeds Threshold"
+
+              query = "avg(last_10m):sum:azure.eventhub_namespaces.server_errors.count{name:<eh-name>} > 3"
+
+              message = "{{name}} Event hub server errors exceeds defined threshold. Subscription: {{subscription_name}}"
+
+              critical = 3
+
+              critical_recovery = 2
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 3
+
+              notify = "@pagerduty-DD_DataPlatform_SRE"
+
+              create_monitor = true
+
+            },
+
+            {
+
+              alert_name = "EVENTHUB-PAAS Server Quota Exceeded Errors Count Exceeds Threshold"
+
+              query = "avg(last_10m):sum:azure.eventhub_clusters.quota_exceeded_errors.count{name:<eh-name>} > 2"
+
+              message = "{{name}} Event hub quota exceeded errors exceeds defined threshold. Subscription: {{subscription_name}}"
+
+              critical = 2
+
+              critical_recovery = 1
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 3
+
+              notify = "@pagerduty-DD_DataPlatform_SRE"
+
+              create_monitor = true
+
+            },
+
+            {
+
+              alert_name = "EVENTHUB-PAAS Throttled Requests Count Exceeds Threshold"
+
+              query = "avg(last_10m):sum:azure.eventhub_namespaces.throttled_requests.count{name:<eh-name>} > 3"
+
+              message = "{{name}} Event hub throttled requests exceeds defined threshold. Subscription: {{subscription_name}}"
+
+              critical = 3
+
+              critical_recovery = 2
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 3
+
+              notify = "@pagerduty-DD_DataPlatform_SRE"
+
+              create_monitor = true
+
+            }
+
+          ]
+
+        },
+
+        {
+
+          service = "cosmosdb"
+
+          cosmosdb-name = [
+
+            "pzi-gxus-n-cdb-csms-s002", #US-STG
+
+            "pzi-gxeu-g-cdb-csms-s001", #EU-STG
+
+            "pzi-gxus-p-cdb-csms-p002", #US-PROD
+
+            "pzi-gxeu-p-cdb-csms-p001", #EU-PROD
+
+            "pzi-gxau-p-cdb-csms-p001", #AU-PROD
+
+            "sgprodcsmsstrd001"         #SG-PROD
+
+          ]
+
+          monitors = [
+
+            {
+
+              alert_name = "COSMOSDB-PAAS High Error Rate Exceeds Threshold"
+
+              query = "sum(last_10m):(sum:azure.cosmosdb.total_requests{name:<cosmosdb-name> , ! statuscode:200 , ! statuscode:201, !statuscode:204} by {collectionname}.as_count() / sum:azure.cosmosdb.total_requests{name:<cosmosdb-name>} by {collectionname}.as_count()) > 0.05"
+
+              message = "{{name}} High Error rate exceeds defined threshold. Subscription: {{subscription_name}}"
+
+              critical = 0.05
+
+              critical_recovery = 0.03
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 3
+
+              notify = "@pagerduty-DD_DataPlatform_SRE"
+
+              create_monitor = true
+
+            }
+
+          ]
+
+        }
+
+      ]
+
+    },
+
+    team_3 = {
+
+      team_name = "TEAM_NAME_4"
+
+      paas = [
+
+        {
+
+          service = "adf"
+
+          subscription_name = [
+
+            "pzi-gxeu-p-sub161",
+
+            "pzi-gxus-p-sub313"
+
+          ]
+
+          monitors = [
+
+            {
+
+              alert_name = "ADF-PAAS Instances Exceeds Threshold"
+
+              query = "avg(last_10m):sum:azure.datafactory_factories.count{subscription_name: <subscription_name>} by {region} > 640"
+
+              message = "ADF Instances Count in {{region}} Exceeds defined Threshold"
+
+              critical = 640
+
+              critical_recovery = null
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 3
+
+              notify = ""
+
+              create_monitor = true
+
+            }
+
+          ]
+
+        },
+
+        {
+
+          service = "virtual network"
+
+          subscription_name = [
+
+            "pzi-gxeu-p-sub161",
+
+            "pzi-gxus-p-sub313"
+
+          ]
+
+          monitors = [
+
+            {
+
+              alert_name = "[ADF]Virtual Network-Total Used IP Count Exceeds Threshold"
+
+              # query = "avg(last_10m):sum:azure.network_virtualnetworks.allocated_addresses{subscription_name: <subscription_name>} by {region} > 819"
+
+              query = "avg(last_10m):((sum:azure.network_virtualnetworks.allocated_addresses{subscription_name: <subscription_name>} by {region}) / (sum:azure.network_virtualnetworks.total_addresses{subscription_name: <subscription_name>} by {region})) * 100 > 65"              
+
+              message = "[ADF]Total Used IP Count in {{region}} Exceeds defined Threshold"
+
+              critical = 65
+
+              critical_recovery = null
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 2
+
+              notify = ""
+
+              create_monitor = true
+
+            }
+
+          ]
+
+        },
+
+        {
+
+          service = "virtual network"
+
+          subscription_name = [
+
+            "pzi-gxeu-p-sub162",
+
+            "pzi-gxus-p-sub312"
+
+          ]
+
+          monitors = [
+
+            {
+
+              alert_name = "[SQL]Virtual Network-Total Used IP Count Exceeds Threshold"
+
+              # query = "avg(last_10m):sum:azure.network_virtualnetworks.allocated_addresses{subscription_name: <subscription_name>} by {region} > 818"
+
+              query = "avg(last_10m):((sum:azure.network_virtualnetworks.allocated_addresses{subscription_name: <subscription_name>} by {region}) / (sum:azure.network_virtualnetworks.total_addresses{subscription_name: <subscription_name>} by {region})) * 100 > 65"              
+
+              message = "[SQL]Total Used IP Count in {{region}} Exceeds defined Threshold"
+
+              critical = 65
+
+              critical_recovery = null
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 2
+
+              notify = ""
+
+              create_monitor = true
+
+            }
+
+          ]
+
+        }        
+
+      ]
+
+    },
+
+  }
+
+}
+
+
+
+
+
+
+
+
