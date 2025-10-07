@@ -2487,5 +2487,1140 @@ variable "teams" {
           synthetic_test = [
             {
               url_suffix = "-pwclabs.pwcglb.com/api/v1/actuator/health"
+type       = "health"
+            },
+            {
+              url_suffix = "-pwclabs.pwcglb.com"
+              type       = "ssl"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = [
+            {
+              high_error_rate = [
+                "get_/public/login",
+                "post_/public/login"
+              ]
+              query = null
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            }
+          ]
+          
+        },
+        #catalogue-service
+        {
+          name        = "catalogue"
+          trace       = "servlet"
+          set_we_tag  = false
+          service_name = null
+          notify_non_prod   = ""
+          notify_prod       = ""
+          notify_her_monitors = ""
+          tag_ciid = {
+            us = "CI57709308"
+            au = "CI57709396"
+            eu = "CI57709393"
+            sg = "CI57709398"
+          }
+          synthetic_test_url_prefix = "catalogue-service"
+          synthetics_mon_priority   = {}
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com/api/v2/actuator/health"
+              type       = "health"
+            },
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = [
+            {
+              high_error_rate = [
+                "post_/assets/search",
+                "get_/workspaces/_workspaceid",
+                "put_/workspaces/_workspaceid_/assets/_id",
+                "post_/workspaces/_workspaceid_/assets/search"
+              ]
+              query = null
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.09", eu_prod = "0.10", au_prod = "0.09", sg_prod = "0.09"
+              }
+              mon_priority = {}
+            }
+          ]
+          
+        },
+        #workbench-service
+        {
+          name        = "workbench"
+          trace       = "servlet"
+          set_we_tag  = false
+          service_name = null
+          notify_non_prod   = ""
+          notify_prod       = ""
+          notify_her_monitors = ""
+          tag_ciid = {
+            us = "CI58685019"
+            au = "CI58685023"
+            eu = "CI58685025"
+            sg = "CI58685027"
+          }
+          synthetic_test_url_prefix = "workbench-service"
+          synthetics_mon_priority   = {}
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com/api/v1/actuator/health"
+              type       = "health"
+            },
+            {
+              url_suffix = "-pwclabs.pwcglb.com"
+              type       = "ssl"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = [
+            {
+              high_error_rate = [
+                "post_/workspaces/_workspaceid_/servicedefinitions",
+                "get_/workspaces/_workspaceid_/servicedefinitions",
+                "get_/workspaces/_workspaceid_/servicedefinitioninstances/_servicedefinitioninstanceid",
+                "get_/workspaces/_workspaceid_/servicedefinitioninstances",
+                "patch_/workspaces/_workspaceid_/serviceinstances/_serviceinstanceid_/mapping",
+                "get_/workspaces/_workspaceid_/mapping"
+              ]
+              query = null
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.30"
+              }
+              mon_priority = {}
+            }
+          ]
+          
+        },
+        #service-definitions
+        {
+          name        = "service definitions"
+          trace       = "servlet"
+          set_we_tag  = false
+          service_name = null
+          notify_non_prod   = ""
+          notify_prod       = ""
+          notify_her_monitors = ""
+          tag_ciid = {
+            us = "CI119483165"
+            au = "CI119483165"
+            eu = "CI119483165"
+            sg = "CI119483165"
+          }
+          synthetic_test_url_prefix = "service-definitions"
+          synthetics_mon_priority   = {}
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com/api/v1/actuator/health"
+              type       = "health"
+            },
+            {
+              url_suffix = "-pwclabs.pwcglb.com"
+              type       = "ssl"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = [
+            {
+              high_error_rate = [
+                "post_/servicedefinitioninstances",
+                "get_/servicedefinitions/_servicedefinitionid",
+                "get_/servicedefinitions",
+                "get_/servicedefinitioninstances",
+                "post_/servicedefinitions"
+              ]
+              query = null
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            }
+          ]
+          
+        },
+        #wbservices-api
+        {
+          name        = "WbServices api"
+          trace       = "flask"
+          set_we_tag  = false
+          service_name = null
+          notify_non_prod   = ""
+          notify_prod       = ""
+          notify_her_monitors = ""
+          tag_ciid = {
+            us = "CI40696030"
+            au = "CI40678371"
+            eu = "CI40687777"
+            sg = "CI58685001"
+          }
+          synthetic_test_url_prefix = "wbservices-api"
+          synthetics_mon_priority   = {}
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com"
+              type       = "ssl"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = [
+            {
+              high_error_rate = [
+                "delete_/api/v1/wbservices/_uuid:engagement_id",
+                "get_/api/v1/features/_feature_id",
+                "get_/api/v1/wbservices/_uuid:engagement_id",
+              ]
+              query = null
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            }
+          ]
+          
+        },
+        {
+          name        = "Workbench Node API"
+          trace       = "express"
+          set_we_tag  = false
+          service_name = "workbench-node-api"
+          notify_non_prod   = ""
+          notify_prod       = ""
+          notify_her_monitors = ""
+          tag_ciid = {
+            global = "CI116493304"
+            us = "CI116457407"
+            au = "CI116457409"
+            eu = "CI116457411"
+            sg = "CI116457413"
+          }
+          synthetic_test_url_prefix = "workbench"
+          synthetics_mon_priority   = {}
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com/api/actuator/health"
+              type       = "health"
+            },
+            {
+              url_suffix = "-pwclabs.pwcglb.com"
+              type       = "ssl"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = [
+            {
+              high_error_rate = [
+                "get_/api/v1/engagements/:engagementid/features"
+              ]
+              query = "sum(last_5m):(sum:trace.express.request.errors{env:##ENV##,service:workbench-node-api,resource_name:get_/api/v1/engagements/:engagementid/features }.as_count() / sum:trace.express.request.hits{env:##ENV##,service:workbench-node-api,resource_name:get_/api/v1/engagements/:engagementid/features }.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },
+            {
+              high_error_rate = [
+                "get_/api/v1/engagements"
+              ]
+              query = "sum(last_5m):(sum:trace.express.request.errors{env:##ENV##,service:workbench-node-api,resource_name:get_/api/v1/engagements}.as_count() / sum:trace.express.request.hits{env:##ENV##,service:workbench-node-api,resource_name:get_/api/v1/engagements}.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },
+            {
+              high_error_rate = [
+                "get_/api/v1/engagements/:engagementid/reports/:reportguid/export/:exportid/status"
+              ]
+              query = "sum(last_5m):(sum:trace.express.request.errors{env:##ENV##,service:workbench-node-api,resource_name:get_/api/v1/engagements/:engagementid/reports/:reportguid/export/:exportid/status}.as_count() / sum:trace.express.request.hits{env:##ENV##,service:workbench-node-api,resource_name:get_/api/v1/engagements/:engagementid/reports/:reportguid/export/:exportid/status}.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },
+            {
+              high_error_rate = [
+                "get_/api/v1/shared/:sharedkey/export/:exportid/status"
+              ]
+              query = "sum(last_5m):(sum:trace.express.request.errors{env:##ENV##,service:workbench-node-api,resource_name:get_/api/v1/shared/:sharedkey/export/:exportid/status}.as_count() / sum:trace.express.request.hits{env:##ENV##,service:workbench-node-api,resource_name:get_/api/v1/shared/:sharedkey/export/:exportid/status}.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },
+            {
+              high_error_rate = [
+                "post_/api/public/v1/engagements/:engagementid/features/:featureid"
+              ]
+              query = "sum(last_5m):(sum:trace.express.request.errors{env:##ENV##,service:workbench-node-api,resource_name:post_/api/public/v1/engagements/:engagementid/features/:featureid}.as_count() / sum:trace.express.request.hits{env:##ENV##,service:workbench-node-api,resource_name:post_/api/public/v1/engagements/:engagementid/features/:featureid}.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },
+            {
+              high_error_rate = [
+                "post_/api/v1/engagements"
+              ]
+              query = "sum(last_5m):(sum:trace.express.request.errors{env:##ENV##,service:workbench-node-api,resource_name:post_/api/v1/engagements}.as_count() / sum:trace.express.request.hits{env:##ENV##,service:workbench-node-api,resource_name:post_/api/v1/engagements}.as_count()) > 1"
+              critical_threshold = {
+                dev = "1", qa = "1", uat = "1", us_stg = "1", eu_stg = "1", us_prod = "1", eu_prod = "1", au_prod = "1", sg_prod = "1"
+              }
+              mon_priority = {}
+            },
+          ]
+        },        
+        {
+          name        = "Alteryx Macros"
+          trace       = "servlet"
+          set_we_tag  = false
+          service_name = null
+          notify_non_prod   = ""
+          notify_prod       = ""
+          notify_her_monitors = ""
+          tag_ciid = {
+            global = "CI116457423"
+            us = "CI116457241"
+            au = "CI116457243"
+            eu = "CI116457245"
+            sg = "CI116457247"
+          }
+          synthetic_test_url_prefix = "alteryx-macros"
+          synthetics_mon_priority   = {}
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com/api/v1/actuator/health"
+              type       = "health"
+            },
+            {
+              url_suffix = "-pwclabs.pwcglb.com"
+              type       = "ssl"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = [
+            {
+              high_error_rate = [
+                "post_/engagements/_engagementid_/track-activity",                
+                "get_/engagements/_userid",
+                "get_/engagements/_engagementid_/files/_filename",
+                "get_/engagements/_engagementid_/feature-instances",
+                "get_/engagements/_engagementid_/data/upload-metadata-options",
+                "get_/engagements/_engagementid_/data/file/download",
+                "get_/engagements/_engagementid_/assets/_guid_/downloadurl",
+                "get_/engagements/_engagementid_/assets/_assetid_/children",
+                "get_/macro-download-installer/typeid/_typeid",                
+              ]
+              query = null
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            }            
+          ]     
+        },
+        {
+          name        = "dcam-api"
+          trace       = "servlet"
+          set_we_tag  = false
+          service_name = "dcam-api"
+          notify_non_prod   = ""
+          notify_prod       = ""
+          notify_her_monitors = ""
+          tag_ciid = {
+            us = "CI116457346"
+            au = "CI116457348"
+            eu = "CI116457350"
+            sg = "CI116457352"
+          }
+          synthetic_test_url_prefix = "dcam-api"
+          synthetics_mon_priority   = {}
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com"
+              type       = "ssl"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = []
+        
+        }              
+      ]
+    },
+    team_7 = {
+      team_name = "TEAM_NAME_6"
+      services = [
+        {
+          name        = "catalogue-service-v3"
+          trace       = "servlet"
+          set_we_tag  = false
+          service_name = null
+          notify_non_prod   = "@teams-Captain_america_Non_Prod_Alerts_Channel"
+          notify_prod       = "@teams-Captain_America_Prod_Alerts_Channel"
+          notify_her_monitors = ""
+          tag_ciid = {
+            us = "CI57709308"
+            au = "CI57709396"
+            eu = "CI57709393"
+            sg = "CI57709398"
+          }
+          synthetic_test_url_prefix = "catalogue-service"
+          synthetics_mon_priority   = {}
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com/api/v3/actuator/health"
+              type       = "health"
+            },
+            {
+              url_suffix = "-pwclabs.pwcglb.com"
+              type       = "ssl"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = [
+            {
+              high_error_rate = [
+                "get_/build/info"
+              ]
+              query = "sum(last_5m):(sum:trace.servlet.request.errors{env:##ENV##,service:catalogue-service-v3,resource_name:get_/build/info }.as_count() / sum:trace.servlet.request.hits{env:##ENV##,service:catalogue-service-v3,resource_name:get_/build/info }.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },
+            {
+              high_error_rate = [
+                "post_/assets/search",
+                
+              ]
+              query = "sum(last_5m):(sum:trace.servlet.request.errors{env:##ENV##,service:catalogue-service-v3,resource_name:post_/assets/search }.as_count() / sum:trace.servlet.request.hits{env:##ENV##,service:catalogue-service-v3,resource_name:post_/assets/search }.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },            
+            {
+              high_error_rate = [
+                "delete_/assets/_id"
+              ]
+              query = "sum(last_5m):(sum:trace.servlet.request.errors{env:##ENV##,service:catalogue-service-v3,resource_name:delete_/assets/_id }.as_count() / sum:trace.servlet.request.hits{env:##ENV##,service:catalogue-service-v3,resource_name:delete_/assets/_id }.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },            
+            {
+              high_error_rate = [
+                "get_/assets/_id"
+              ]
+              query = "sum(last_5m):(sum:trace.servlet.request.errors{env:##ENV##,service:catalogue-service-v3,resource_name:get_/assets/_id }.as_count() / sum:trace.servlet.request.hits{env:##ENV##,service:catalogue-service-v3,resource_name:get_/assets/_id }.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },            
+            {
+              high_error_rate = [
+                "get_/assets/_id_/detailed"
+              ]
+              query = "sum(last_5m):(sum:trace.servlet.request.errors{env:##ENV##,service:catalogue-service-v3,resource_name:get_/assets/_id_/detailed }.as_count() / sum:trace.servlet.request.hits{env:##ENV##,service:catalogue-service-v3,resource_name:get_/assets/_id_/detailed }.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },            
+            {
+              high_error_rate = [
+                "get_/assets/_id_/lineage"
+              ]
+              query = "sum(last_5m):(sum:trace.servlet.request.errors{env:##ENV##,service:catalogue-service-v3,resource_name:get_/assets/_id_/lineage }.as_count() / sum:trace.servlet.request.hits{env:##ENV##,service:catalogue-service-v3,resource_name:get_/assets/_id_/lineage }.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },            
+            {
+              high_error_rate = [
+                "get_/policies/_userid"
+              ]
+              query = "sum(last_5m):(sum:trace.servlet.request.errors{env:##ENV##,service:catalogue-service-v3,resource_name:get_/policies/_userid }.as_count() / sum:trace.servlet.request.hits{env:##ENV##,service:catalogue-service-v3,resource_name:get_/policies/_userid }.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },            
+            {
+              high_error_rate = [
+                "get_/roles"
+              ]
+              query = "sum(last_5m):(sum:trace.servlet.request.errors{env:##ENV##,service:catalogue-service-v3,resource_name:get_/roles }.as_count() / sum:trace.servlet.request.hits{env:##ENV##,service:catalogue-service-v3,resource_name:get_/roles }.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },            
+            {
+              high_error_rate = [
+                "get_/roles/_rolename"
+              ]
+              query = "sum(last_5m):(sum:trace.servlet.request.errors{env:##ENV##,service:catalogue-service-v3,resource_name:get_/roles/_rolename }.as_count() / sum:trace.servlet.request.hits{env:##ENV##,service:catalogue-service-v3,resource_name:get_/roles/_rolename }.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },            
+            {
+              high_error_rate = [
+                "get_/types/_name"
+              ]
+              query = "sum(last_5m):(sum:trace.servlet.request.errors{env:##ENV##,service:catalogue-service-v3,resource_name:get_/types/_name }.as_count() / sum:trace.servlet.request.hits{env:##ENV##,service:catalogue-service-v3,resource_name:get_/types/_name }.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },            
+            {
+              high_error_rate = [
+                "get_/types/business-metadata"
+              ]
+              query = "sum(last_5m):(sum:trace.servlet.request.errors{env:##ENV##,service:catalogue-service-v3,resource_name:get_/types/business-metadata }.as_count() / sum:trace.servlet.request.hits{env:##ENV##,service:catalogue-service-v3,resource_name:get_/types/business-metadata }.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },            
+            {
+              high_error_rate = [
+                "get_/types/business-metadata/_name"
+              ]
+              query = "sum(last_5m):(sum:trace.servlet.request.errors{env:##ENV##,service:catalogue-service-v3,resource_name:get_/types/business-metadata/_name }.as_count() / sum:trace.servlet.request.hits{env:##ENV##,service:catalogue-service-v3,resource_name:get_/types/business-metadata/_name }.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            },            
+            {
+              high_error_rate = [
+                "post_/assets"
+              ]
+              query = "sum(last_5m):(sum:trace.servlet.request.errors{env:##ENV##,service:catalogue-service-v3,resource_name:post_/assets }.as_count() / sum:trace.servlet.request.hits{env:##ENV##,service:catalogue-service-v3,resource_name:post_/assets }.as_count()) > 0.05"
+              critical_threshold = {
+                dev = "0.05", qa = "0.05", uat = "0.05", us_stg = "0.05", eu_stg = "0.05", us_prod = "0.05", eu_prod = "0.05", au_prod = "0.05", sg_prod = "0.05"
+              }
+              mon_priority = {}
+            }
+
+          ]
+            
+                    
+        },
+
+        {
+          name        = "DP Approval v2"
+          trace       = "servlet"
+          set_we_tag  = true
+          service_name = null
+          notify_non_prod   = ""
+          notify_prod       = "@teams-Captain_America_Prod_Alerts_Channel"
+          notify_her_monitors = ""
+          tag_ciid = {
+            global = "CI117010547"
+            us = "CI117163165"
+            au = "CI117163167"
+            eu = "CI117163169"
+            sg = "CI117163171"
+          }
+          synthetic_test_url_prefix = "dp-approval-service"
+          synthetics_mon_priority   = {}
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com/api/v2/actuator/health"
+              type       = "health"
+            },
+            {
+              url_suffix = "-pwclabs.pwcglb.com"
+              type       = "ssl"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = []
+          
+        },        
+        # {
+        #   name        = "Discovery"
+        #   notify_her_monitors = ""
+        #  tag_ciid = {
+        #     us = "CI119483173"
+        #     au = "CI119483173"
+        #     eu = "CI119483173"
+        #     sg = "CI119483173"
+        #   }
+        #   synthetic_test_url_prefix = "discovery-service"
+        #   synthetic_test =    [
+        #     {
+        #       url_suffix = "-pwclabs.pwcglb.com/api/v1/actuator/health"
+        #       type       = "health"
+        #     },
+        #     {
+        #       url_suffix = "-pwclabs.pwcglb.com"
+        #       type       = "ssl"
+        #     }
+        #   ]
+        #   synthetic_oauth_login_test = []
+        #   critical_alerts = []
+        # },
+        {
+          name        = "data access mgmt"
+          trace       = "servlet"
+          set_we_tag  = true
+          service_name = null
+          notify_non_prod   = ""
+          notify_prod       = ""
+          notify_her_monitors = ""
+          tag_ciid = {
+            us = "CI57709308"
+            au = "CI57709396"
+            eu = "CI57709393"
+            sg = "CI57709398"
+          }
+          synthetic_test_url_prefix = "data-access-mgmt"
+          synthetics_mon_priority   = {}
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com/api/v1/swagger-ui/index.html"
+              type       = "health"
+            },
+            {
+              url_suffix = "-pwclabs.pwcglb.com"
+              type       = "ssl"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = []
+          
+        },              
+        
+        {
+          name        = "adf"
+          trace       = "servlet"
+          set_we_tag  = true
+          service_name = null
+          notify_non_prod   = ""
+          notify_prod       = ""
+          notify_her_monitors = ""
+          tag_ciid = {
+            us = "CI116457443"
+            au = "CI116457324"
+            eu = "CI116457326"
+            sg = "CI116457328"
+          }
+          synthetic_test_url_prefix = "adf-service"
+          synthetics_mon_priority   = {}
+          synthetic_test = [
+            {
+              url_suffix = "-pwclabs.pwcglb.com/api/v1/actuator/health"
+              type       = "health"
+            },
+            {
+              url_suffix = "-pwclabs.pwcglb.com"
+              type       = "ssl"
+            }
+          ]
+          synthetic_oauth_login_test = []
+          critical_alerts = []
+          
+        }
+      ]
+    }
+  }
+}
+
+
+variable "teams_critical_slo_custom" {
+  description = "List of health monitors for all teams and their services"
+  type      =  map(any)
+  default = {
+    team_8 = {
+      team_name = "TEAM_NAME_4"
+      services = [
+        {
+          name        = "Workbench Node API"
+          tag_ciid = {
+            global = "CI116493304"
+            us = "CI116457407"
+            au = "CI116457409"
+            eu = "CI116457411"
+            sg = "CI116457413"
+          }
+          critical_alerts = [
+            {
+              high_error_rate = [
+                "get_/api/v1/engagements/:engagementid/features",
+                "get_/api/v1/engagements",
+                "get_/api/v1/engagements/:engagementid/reports/:reportguid/export/:exportid/status",
+                "get_/api/v1/shared/:sharedkey/export/:exportid/status",
+                "post_/api/public/v1/engagements/:engagementid/features/:featureid",
+                "post_/api/v1/engagements"
+              ]              
+            }            
+          ]
+        }
+      ]
+    }
+    team_2 = {
+      team_name = "TEAM_NAME_2"
+      services = [
+        {
+          name        = "django-engagement-admin"
+          tag_ciid = {
+            us = "CI116457299"
+            au = "CI116457301"
+            eu = "CI116457303"
+            sg = "CI116457305"
+          }
+          critical_alerts = [
+            {
+              high_error_rate = [
+                "get_api/v1/engagement/",
+                "get_api/v1/engagement/_p_pk_/._/",
+                "get_api/v1/users",
+                "post_api/rbac/v1/check"
+              ]
+              
+            },
+            
+          ]
+        },
+        {
+          name        = "engagement service v2"
+          tag_ciid = {
+            us = "CI116457313"
+            au = "CI116457315"
+            eu = "CI116457317"
+            sg = "CI116457319"
+          }
+          critical_alerts = [
+            {
+              high_error_rate = [
+                "delete_/admin/engagements/_engagementid_/services/_servicename",
+                "get_/admin/engagements/_engagementid_/services",
+                "get_/admin/engagements/_engagementid_/connections",
+                "get_/engagements/_engagementid",
+                "put_/admin/engagements/_engagementid_/services/_servicename_/resources/_resourcename_/connections"
+              ]
+            }
+          ]
+        },
+        {
+          name        = "fabric api v3"
+          tag_ciid = {
+            us = "CI116457321"
+            au = "CI116457324"
+            eu = "CI116457326"
+            sg = "CI116457328"
+          }
+          critical_alerts = [
+            {
+              high_error_rate = [
+                "get_/workspaces/_workspaceid_/sas", 
+                "get_/workspaces/_workspaceid_/connections"
+              ]
+            }
+          ]
+        },
+        {
+          name        = "workspace exp"
+          tag_ciid = {
+            us = "" #tobecompleted
+            au = "" #tobecompleted
+            eu = "" #tobecompleted
+            sg = "" #tobecompleted
+          }
+          critical_alerts = [
+            {
+              high_error_rate = [
+                "post_/workspaces/search", 
+                "get_/workspaces/_workspaceid",
+                "get_/public/workspaces/_workspaceid_/users/_userid"
+              ]
+            }
+          ]
+        },
+      ]
+    },
+    team_3 = {
+      team_name = "TEAM_NAME_3"
+      services = [
+        {
+          name        = "MFE Authorization"
+          tag_ciid = {
+            global = "CI117010523"
+            us = "CI117163205"
+            au = "CI117163207"
+            eu = "CI117163209"
+            sg = "CI117163211"
+          }
+          critical_alerts = [
+
+            {
+              high_error_rate = [
+                "get_/api/authorization/v_version_/passport"
+              ]
+            }
+          ]
+        },
+        {
+          name        = "MFE Analytics"
+          tag_ciid = {
+            global = "CI117010517"
+            us = "CI117163181"
+            au = "CI117163183"
+            eu = "CI117163185"
+            sg = "CI117163187"
+          }
+          critical_alerts = [
+
+            {
+              high_error_rate = []
+            }
+          ]
+        },
+        {
+          name        = "MFE FrontEnds"
+          tag_ciid = {
+            global = "CI117010527"
+            us = "CI117163229"
+            au = "CI117163231"
+            eu = "CI117163233"
+            sg = "CI117163235"
+          }
+          critical_alerts = [
+            {
+              high_error_rate = [
+                "post_/eventhandlers/sitecreatedtopicevent",
+                "get_/api/microfrontends/v_version_/micro-frontends/importmap",
+                "get_/api/microfrontends/v_version_/micro-frontends"
+              ]
+              
+            },
+          ]
+        },
+        {
+          name        = "MFE Pages"
+          tag_ciid = {
+            global = "CI117010529"
+            us = "CI117163237"
+            au = "CI117163239"
+            eu = "CI117163241"
+            sg = "CI117163243"
+          }
+          critical_alerts = [
+            {
+              high_error_rate = [
+                "post_/eventhandlers/sitecreatedtopicevent",
+                "get_/api/pages/v_version_/pages"
+              ]
+            },
+          ]
+        },
+        {
+          name        = "MFE Sites"
+          tag_ciid = {
+            global = "CI117010531"
+            us = "CI117163245"
+            au = "CI117163247"
+            eu = "CI117163249"
+            sg = "CI117163251"
+          }
+          
+          critical_alerts = [
+            {
+              high_error_rate = [
+                "get_/api/sites/sitesandcontexts/_contexttype",
+                "post_/api/sites",
+                "get_/api/sites/v_version_/sites/_siteprefix"
+              ]
+              
+            },
+          ]
+        },
+        {
+          name        = "WB MYDATA API"
+          tag_ciid = {
+            global = "CI117163287"
+            us = "CI117163293"
+            au = "CI117163289"
+            eu = "CI117163291"
+            sg = "CI117163295"
+          }
+          
+          critical_alerts = [
+            {
+              high_error_rate = [
+                "get_/api/v1/workspace/_workspaceid_/file-system"
+              ]
+              
+            },
+          ]
+        },
+        {
+          name        = "MFE Workspace Context Adapter"
+          tag_ciid = {
+            global = "CI117163287"
+            us = "CI117163293"
+            au = "CI117163289"
+            eu = "CI117163291"
+            sg = "CI117163295"
+          }
+          
+          critical_alerts = [
+            {
+              high_error_rate = [
+                "get_/api/internal/workspace-context-adapter/v_version_/workspaces"
+              ]
+              
+            },
+          ]
+        },
+        {
+          name        = "MFE App Configuration"
+          tag_ciid = {
+            global = "CI117010525"
+            us = "CI117163197"
+            au = "CI117163199"
+            eu = "CI117163201"
+            sg = "CI117163203"
+          }          
+          critical_alerts = [
+            {
+              high_error_rate = [
+                "get_/api/app-configuration/v_version_/app-configuration/app-settings/internal-domains",
+                "get_/api/app-configuration/v_version_/app-configuration/_key"
+              ]
+              
+            },
+          ]
+        },
+      ]
+    },
+    team_4 = {
+      team_name = "TEAM_NAME_6"
+      services = [
+        {
+          name        = "catalogue-service-v3"
+          tag_ciid = {
+            us = "CI57709308"
+            au = "CI57709396"
+            eu = "CI57709393"
+            sg = "CI57709398"
+          }
+          critical_alerts = [
+            {
+              high_error_rate = [
+                "delete_/assets/_id",
+                "get_/assets/_id",
+                "get_/assets/_id_/detailed",
+                "get_/assets/_id_/lineage",
+                "get_/policies/_userid",
+                "get_/roles",
+                "get_/roles/_rolename",
+                "get_/types/_name",
+                "get_/types/business-metadata",
+                "get_/types/business-metadata/_name",
+                "post_/assets",
+                "post_/assets/search"
+              ]
+              
+            }         
+          ]
+        },
+      ]
+    }
+   }
+}
+
+variable "nifi_kube_cluster_name" {
+  default = {
+    dev    = "us-nifi-lower-l002-pzi-gxus-g-sub046"
+    qa     = "us-nifi-lower-l002-pzi-gxus-g-sub046"
+    uat    = "us-uat-platform-nifi-aks-001"
+    us_stg = "us-nifi-nonprod-n002-pzi-gxus-n-sub038"
+    eu_stg = "we-nifi-nonprod-n002-pzi-gxeu-g-sub023"
+    us_prod = "us-nifi-prod-p002-pzi-gxus-p-sub079"
+    eu_prod = "we-nifi-prod-p002-pzi-gxeu-p-sub052"
+    au_prod = "au-nifi-prod-p002-pzi-gxau-p-sub015"
+    sg_prod = "sg-prod-platform-nifi-aks-001"
+  }
+}
+variable "nifi_kube_cluster_team_name" {
+  default = {    
+    dev    = "us-nifi-lower-l002-pzi-gxus-g-sub046"
+    qa     = "us-nifi-lower-l002-pzi-gxus-g-sub046"
+    uat    = "us-uat-platform-nifi-aks-001"
+    us_stg = "us-nifi-nonprod-n002-pzi-gxus-n-sub038"
+    eu_stg = "we-nifi-nonprod-n002-pzi-gxeu-g-sub023"
+    us_prod = "us-nifi-prod-p002-pzi-gxus-p-sub079"
+    eu_prod = "we-nifi-prod-p002-pzi-gxeu-p-sub052"
+    au_prod = "au-nifi-prod-p002-pzi-gxau-p-sub015"
+    sg_prod = "sg-prod-platform-nifi-aks-001"
+  }
+}
+
+variable "nifi_tag_ciid" {
+  default = {
+    us = "CI116457367"
+    au = "CI116457369"
+    eu = "CI116457371"
+    sg = "CI116457373"
+  }
+}
+
+variable "dp_kube_cluster_name" {
+  default = {
+    dev    = "us-dev-platform-apps-aks-001"
+    qa     = "us-qa-platform-apps-aks-001"
+    uat    = "us-uat-platform-apps-aks-001"
+    us_stg = "us-stage-platform-apps-aks-001"
+    eu_stg = "we-platform-nonprod-n001-pzi-gxeu-g-sub023"
+    us_prod = "us-platform-prod-p001-pzi-gxus-p-sub079"
+    eu_prod = "we-platform-prod-p001-pzi-gxeu-p-sub052"
+    au_prod = "au-platform-prod-p001-pzi-gxau-p-sub015"
+    sg_prod = "sg-prod-platform-apps-aks-001"
+  }
+}
+variable "dp_kube_cluster_team_name" {
+  default = { 
+    dev    = "us-dev-platform-apps-aks-001"
+    qa     = "us-qa-platform-apps-aks-001"
+    uat    = "us-uat-platform-apps-aks-001"   
+    us_stg = "us-stage-platform-apps-aks-001"
+    eu_stg = "we-platform-nonprod-n001-pzi-gxeu-g-sub023"
+    us_prod = "us-platform-prod-p001-pzi-gxus-p-sub079"
+    eu_prod = "we-platform-prod-p001-pzi-gxeu-p-sub052"
+    au_prod = "au-platform-prod-p001-pzi-gxau-p-sub015"
+    sg_prod = "sg-prod-platform-apps-aks-001"
+  }
+}
+
+variable "kube_namespace_values" {
+  default = {
+    dev    = "dp-services-us-dev"
+    qa     = "dp-services-us-qa"
+    uat    = "dp-services-us-uat"
+    us_stg = "dp-services-us-stage"
+    eu_stg = "dp-services-eu-stage"
+    us_prod = "dp-services-us-prod"
+    eu_prod = "dp-services-eu-prod"
+    au_prod = "dataplatform-au-prod"
+    sg_prod = "dp-services-sg-prod"
+  }
+}
+
+variable "mfe_kube_namespace_values" {
+  default = {
+    dev    = "dp-mfe-us-dev"
+    qa     = "dp-mfe-us-qa"
+    us_stg = "dp-mfe-us-stage"
+    eu_stg = "dp-mfe-eu-stage"
+    us_prod = "dp-mfe-us-prod"
+    eu_prod = "dp-mfe-eu-prod"
+    au_prod = "dp-mfe-au-prod"
+    sg_prod = "dp-mfe-sg-prod"
+  }
+}
+
+variable "kube_namespace_team_values" {
+  default = {   
+    dev    = "dp-services-us-dev"
+    qa     = "dp-services-us-qa"
+    uat    = "dp-services-us-uat" 
+    us_stg = "dp-services-us-stage"
+    eu_stg = "dp-services-eu-stage"
+    us_prod = "dp-services-us-prod"
+    eu_prod = "dp-services-eu-prod"
+    au_prod = "dataplatform-au-prod"
+    sg_prod = "dp-services-sg-prod"
+  }
+}
+
+variable "monitors_priority" {
+default = {
+    dev    = "3"
+    qa     = "3"
+    uat    = "3" 
+    us_stg = "3"
+    eu_stg = "3"
+    us_prod = "3"
+    eu_prod = "3"
+    au_prod = "3"
+    sg_prod = "3"
+  }
+}
+variable "custom_monitor_val" {
+  description = "List of custom monitors for all teams and their services"
+  type        = map(any)
+  default = {
+    team_1 = {
+      team_name = "TEAM_NAME_6"
+      services = [
+        {
+          name         = "catalogue-service"
+          metrics_type = "custom"
+          tag_ciid = {
+            global = "CI57709054"
+            us     = "CI57709308"
+            au     = "CI57709396"
+            eu     = "CI57709393"
+            sg     = "CI57709398"
+          }
+          custom_monitor = []
+        }
+      ]
+    },
+    team_4 = {
+      team_name = "TEAM_NAME_4"
+      services = [
+        {
+          name         = "id_broker"
+          metrics_type = "service"
+          tag_ciid = {
+            global = "CI116457447"
+            us     = "CI116457338"
+            au     = "CI116457340"
+            eu     = "CI116457342"
+            sg     = "CI116457344"
+          }
+          custom_monitor = [
+            {
+              enable_namespace_val = true
+              namespace_val        = {}
+              alert_name           = "Idbroker Pod restarted"
+              query                = "max(last_8m):sum:kubernetes_state.container.restarts{kube_namespace:default AND (kube_container_name:dp-idbroker OR kube_container_name:rbac-stop-gap)} by {kube_namespace,kube_container_name} >= 2"
+              message              = "{{container.name}} restarted in Id broker pod\n"
+              critical             = 2
+              critical_recovery    = 1
+              warning              = null
+              warning_recovery     = null
+              #priority             = 3
+              mon_priority         = {}
+              notify               = " "
+            }
+          ]
+        },
+        {
+          name         = "dcam_api"
+          metrics_type = "service"
+          tag_ciid = {
+            global = "CI116457447"
+            us     = "CI116457338"
+            au     = "CI116457340"
+            eu     = "CI116457342"
+            sg     = "CI116457344"
+
 
 
