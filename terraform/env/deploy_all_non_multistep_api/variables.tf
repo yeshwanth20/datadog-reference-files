@@ -4266,6 +4266,2784 @@ variable "log_monitors_val" {
             }
 
           ]
+variable "log_monitors_val" {
+
+  description = "List of log monitors for all teams and their services"
+
+  type        = map(any)
+
+  default = {
+
+    team_2 = {
+
+      team_name = "TEAM_NAME_2"
+
+      services = [   
+
+        {
+
+          name = "fabric-api-v3"
+
+          tag_ciid = {
+
+            global = "CI40696181"
+
+            us     = "CI116457321"
+
+            au     = "CI116457324"
+
+            eu     = "CI116457326"
+
+            sg     = "CI116457328"       
+
+          }
+
+          log_monitor = [
+
+            {
+
+              alert_name        = "fabric-api-v3 Interrupted connection getting response for future"
+
+              query             = "logs(\"service:fabric-api-v3 status:error \\\"Unknown while calling\\\"\").index(\"*\").rollup(\"count\").last(\"5m\") > 5"
+
+              message           = "**\n\n**Env: {{log.tags.env_}}** \n\n**Monitor Alert Message:**\n\n Interrupted connection getting response for future is triggered for {{log.service}} in {{kube_cluster_name.name}} \n Validate in logs which service is being called and test connection \n**Possible Resolution Steps:**\n\n \n**"
+
+              critical          = 5
+
+              critical_recovery = 4.9
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 1
+
+              notify            = " "
+
+            },
+
+            {
+
+              alert_name        = "fabric-api-v3 Cannot connect getting response for future"
+
+              query             = "logs(\"service:fabric-api-v3 status:error \\\"Unable to connect to\\\"\").index(\"*\").rollup(\"count\").last(\"5m\") > 5"
+
+              message           = "**\n\n**Env: {{log.tags.env_}}** \n\n**Monitor Alert Message:**\n\n Cannot connect getting response for future is triggered for {{log.service}} in {{kube_cluster_name.name}} \n Validate in logs which service is being called and test connection \n**Possible Resolution Steps:**\n\n \n**"
+
+              critical          = 5
+
+              critical_recovery = 4.9
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 1
+
+              notify            = " "
+
+            },
+
+            {
+
+              alert_name        = "fabric-api-v3 Cannot upload files before containers are provisioned"
+
+              query             = "logs(\"service:fabric-api-v3 status:error \\\"container not provisioned for file upload\\\"\").index(\"*\").rollup(\"count\").last(\"5m\") > 5"
+
+              message           = "**\n\n**Env: {{log.tags.env_}}** \n\n**Monitor Alert Message:**\n\n Cannot upload files before containers are provisioned is triggered for {{log.service}} in {{kube_cluster_name.name}} \n Validate in logs which service is being called and test connection \n**Possible Resolution Steps:**\n\n \n Check if the database is up \n**"
+
+              critical          = 5
+
+              critical_recovery = 4.9
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 1
+
+              notify            = " "
+
+            }
+
+          ]
+
+        },
+
+        {
+
+          name = "workspace-service"
+
+          tag_ciid = {
+
+            global = ""
+
+            us     = "CI116457421"
+
+            au     = "CI41101427"
+
+
+
+            eu     = "CI41101419"
+
+            sg     = "CI58685029"
+
+          }
+
+          log_monitor = [
+
+            {
+
+              alert_name        = "Workspace-service Interrupted connection getting response for future"
+
+              query             = "logs(\"service:workspace-service status:error \\\"Unknown while calling\\\"\").index(\"*\").rollup(\"count\").last(\"5m\") > 5"
+
+              message           = "{service.name} Interrupted connection getting response for future is triggered for {{log.service}} in {{kube_cluster_name.name}} \n Validate in logs which service is being called and test connection \n "
+
+              critical          = 5
+
+              critical_recovery = 4.9
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 1
+
+              notify            = " "
+
+            },
+
+            {
+
+              alert_name        = "Workspace-service Autz failure"
+
+              query             = "logs(\"service:workspace-service status:error \\\"Errno\\\"\").index(\"*\").rollup(\"count\").last(\"2m\") > 3"
+
+              message           = "{service.name} Autz failure is triggered for {{log.service}} in {{kube_cluster_name.name}} \n Validate user credentials if it's exist \n"
+
+              critical          = 3
+
+              critical_recovery = 2.9
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 1
+
+              notify            = " "
+
+            },
+
+            {
+
+              alert_name        = "Workspace-service Unable to Create Workspace"
+
+              query             = "logs(\"service:workspace-service status:error \\\"com.pwc.base.exceptions.PwcBaseException\\\"\").index(\"*\").rollup(\"count\").last(\"5m\") > 3"
+
+              message           = "{service.name} Unable to Create Workspace is triggered for {{log.service}} in {{kube_cluster_name.name}} \n Check the logs for reason of unable to create workspace. exc(invalid workspace name, special character)\n "
+
+              critical          = 3
+
+              critical_recovery = 2.9
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 1
+
+              notify            = " "
+
+            },
+
+            {
+
+              alert_name        = "Workspace-service Unable to get Workspace information"
+
+              query             = "logs(\"service:workspace-service status:error \\\"unable to find workspace\\\"\").index(\"*\").rollup(\"count\").last(\"5m\") > 10"
+
+              message           = " {service.name} Unable to get Workspace information is triggered for {{log.service}} in {{kube_cluster_name.name}} \n validate if workspace has been created  or exist \n"
+
+              critical          = 10
+
+              critical_recovery = 9
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 1
+
+              notify            = " "
+
+            },
+
+            {
+
+              alert_name        = "Workspace-service Unable to delete Workspace"
+
+              query             = "logs(\"service:workspace-service status:error \\\"org.springframework.core.convert.ConversionFailedException\\\"\").index(\"*\").rollup(\"count\").last(\"10m\") > 3"
+
+              message           = "{service.name} Unable to delete Workspace is triggered for {{log.service}} in {{kube_cluster_name.name}} \n check on the logs for reason to unable to delete the workspace. ex(invalid workspace name)\n"
+
+              critical          = 3
+
+              critical_recovery = 2.9
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 1
+
+              notify            = " "
+
+            },
+
+            {
+
+              alert_name        = "Workspace-service Unable to connect to Cosmos DB"
+
+              query             = "logs(\"service:workspace-service status:error \\\"Connection failed\\\"\").index(\"*\").rollup(\"count\").last(\"5m\") > 0"
+
+              message           = "{service.name} Unable to connect to Cosmos DB is triggered for {{log.service}} in {{kube_cluster_name.name}} \n check on the logs for reason connection failed. ex(credentials, invalid DB information) \n"
+
+              critical          = 0
+
+              critical_recovery = 0
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 1
+
+              notify            = " "
+
+            },
+
+            {
+
+              alert_name        = "Workspace-service Unable to update workspace user"
+
+              query             = "logs(\"service:workspace-service status:error \\\"Error dropping the message\\\"\").index(\"*\").rollup(\"count\").last(\"5m\") > 3"
+
+              message           = "{service.name} Unable to update workspace user is triggered for {{log.service}} in {{kube_cluster_name.name}} \n Validate if user existand is using correct credentials \n"
+
+              critical          = 3
+
+              critical_recovery = 2.9
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 1
+
+              notify            = " "
+
+            },
+
+            {
+
+              alert_name        = "Workspace-service Unable to get workspace users"
+
+              query             = "logs(\"service:workspace-service status:error \\\"unable to get results from Azure Search\\\"\").index(\"*\").rollup(\"count\").last(\"5m\") > 3"
+
+              message           = "{service.name} Unable to get workspace users is triggered for {{log.service}} in {{kube_cluster_name.name}} \n Validate if user existand is using correct credentials \n"
+
+              critical          = 3
+
+              critical_recovery = 2.9
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 1
+
+              notify            = " "
+
+            }
+
+          ]
+
+        },
+
+        {
+
+          name = "engagement-service-v2"
+
+          tag_ciid = {
+
+            global = "CI116457441"
+
+            us     = "CI116457313"
+
+            au     = "CI116457315"
+
+            eu     = "CI116457317"
+
+            sg     = "CI116457319"
+
+          }
+
+          log_monitor = [
+
+            {
+
+              alert_name        = "engagement-service-v2 Postgres connection failure"
+
+              query             = "logs(\"service:engagement-service-v2 status:error @error.kind:(JDBCConnectionException)\").index(\"*\").rollup(\"count\").last(\"5m\") > 0"
+
+              message           = "**\n\n**Env: {{log.tags.env_}}** \n\n**pwc_territory: {{log.tags.pwc_territory_}}**\n\n**Monitor Alert Message:**\n\n Postgres connection failure alert is triggered for {{log.service}} in {{kube_cluster_name.name}} \n**Possible Resolution Steps:**\n\n Validate credentials used for connecting to postgres\n Check if the database is up \n**"
+
+              critical          = 0
+
+              critical_recovery = 0
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 2
+
+              notify            = " "
+
+            },
+
+            {
+
+              alert_name        = "engagement-service-v2 Unable to authorize the user"
+
+              query             = "logs(\"service:engagement-service-v2 status:error \\\"does not have access to the service\\\"\").index(\"*\").rollup(\"count\").last(\"1m\") > 50"
+
+              message           = "**\n\n**Env: {{log.tags.env_}}** \n\n**pwc_territory: {{log.tags.pwc_territory_}}**\n\n**Monitor Alert Message:**\n\n Unable to authorize the user alert is triggered for {{log.service}} in {{kube_cluster_name.name}} \n**Possible Resolution Steps:**\n\n run the job User_Access_To_Autz_Services_Deploy to give user access\n**"
+
+              critical          = 50
+
+              critical_recovery = 49
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 2
+
+              notify            = " "
+
+            },
+
+            {
+
+              alert_name        = "engagement-service-v2 Request for non-existent resource"
+
+              query             = "logs(\"service:engagement-service-v2 status:error \\\"No Resources found for\\\"\").index(\"*\").rollup(\"count\").last(\"5m\") > 50"
+
+              message           = "**\n\n**Env: {{log.tags.env_}}** \n\n**pwc_territory: {{log.tags.pwc_territory_}}**\n\n**Monitor Alert Message:**\n\n Request for non-existent resource alert is triggered for {{log.service}} in {{kube_cluster_name.name}} \n**Possible Resolution Steps:**\n\n Need to manually examine logs to determine a potential problem \n**"
+
+              critical          = 50
+
+              critical_recovery = 49
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 2
+
+              notify            = " "
+
+            },
+
+
+
+          ]
+
+        },
+
+        {
+
+          name = "generic-kafka-producer"
+
+          tag_ciid = {
+
+            global = "CI40696181"
+
+            us = "CI116457330"
+
+            au = "CI116457332"
+
+            eu = "CI116457334"
+
+            sg = "CI116457336"        
+
+          }
+
+          log_monitor = [
+
+            {
+
+              alert_name        = "generic-kafka-producer No active Kafka Nodes Instances found"
+
+              query             = "logs(\"service:generic-kafka-producer status:error \\\"There are no Kafka Brokers UP for Cluster\\\"\").index(\"*\").rollup(\"count\").last(\"2m\") > 0"
+
+              message           = "**\n\n**Env: {{log.tags.env_}}** \n\n**pwc_territory: {{log.tags.pwc_territory_}}**\n\n**Monitor Alert Message:**\n\n No active Kafka Nodes Instances found alert is triggered for {{log.service}} in {{kube_cluster_name.name}} \n\n**Possible Resolution Steps:**\n\n Check if kafka cluster is up and healthy\n Check the KAFKA_BOOTSTRAP_SERVERS property to get the instances and verify they are up and running \n**"
+
+              critical          = 0
+
+              critical_recovery = 0
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 4
+
+              notify            = " "
+
+            },
+
+            {
+
+              alert_name        = "generic-kafka-producer Kafka connect Timeout"
+
+              query             = "logs(\"service:generic-kafka-producer status:error \\\"service is taking more than\\\"\").index(\"*\").rollup(\"count\").last(\"2m\") > 0"
+
+              message           = "**\n\n**Env: {{log.tags.env_}}** \n\n**pwc_territory: {{log.tags.pwc_territory_}}**\n\n**Monitor Alert Message:**\n\n Kafka connect Timeout alert is triggered for {{log.service}} in {{kube_cluster_name.name}} \n\n**Possible Resolution Steps:**\n\n Validate credentials used for connecting to Kafka Cluster \n**"
+
+              critical          = 0
+
+              critical_recovery = 0
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 4
+
+              notify            = " "
+
+            },
+
+            {
+
+              alert_name        = "generic-kafka-producer Kafka Failed Server Error"
+
+              query             = "logs(\"service:generic-kafka-producer status:error \\\"unable to connect to kafka\\\"\").index(\"*\").rollup(\"count\").last(\"2m\") > 0"
+
+              message           = "**\n\n**Env: {{log.tags.env_}}** \n\n**pwc_territory: {{log.tags.pwc_territory_}}**\n\n**Monitor Alert Message:**\n\n Kafka Failed Server Error alert is triggered for {{log.service}} in {{kube_cluster_name.name}} \n\n**Possible Resolution Steps:**\n\n Validate credentials used for connecting to Kafka Cluster\n Check the KAFKA_BOOTSTRAP_SERVERS property to get the instances and verify they are up and running \n**"
+
+              critical          = 0
+
+              critical_recovery = 0
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 4
+
+              notify            = " "
+
+            },
+
+            {
+
+              alert_name        = "generic-kafka-producer Kafka unable to drop message in kafka with Topic"
+
+              query             = "logs(\"service:generic-kafka-producer status:error \\\"unable to drop message in kafka Topic\\\"\").index(\"*\").rollup(\"count\").last(\"2m\") > 5"
+
+              message           = "**\n\n**Env: {{log.tags.env_}}** \n\n**pwc_territory: {{log.tags.pwc_territory_}}**\n\n**Monitor Alert Message:**\n\n Kafka unable to drop message in kafka with Topic alert is triggered for {{log.service}} in {{kube_cluster_name.name}} \n\n**Possible Resolution Steps:**\n\n Need to manually examine logs to determine a potential problem in callers message resulting in failure \n**"
+
+              critical          = 5
+
+              critical_recovery = 4.9
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 4
+
+              notify            = " "
+
+            },
+
+            {
+
+              alert_name        = "generic-kafka-producer Error Dropping Message"
+
+              query             = "logs(\"service:generic-kafka-producer status:error \\\"failed dropping a message into the kafka topic\\\"\").index(\"*\").rollup(\"count\").last(\"2m\") > 5"
+
+              message           = "**\n\n**Env: {{log.tags.env_}}** \n\n**pwc_territory: {{log.tags.pwc_territory_}}**\n\n**Monitor Alert Message:**\n\n Error Dropping Message alert is triggered for {{log.service}} in {{kube_cluster_name.name}} \n\n**Possible Resolution Steps:**\n\n Need to manually examine logs to determine a potential problem in callers message resulting in failure \n**"
+
+              critical          = 5
+
+              critical_recovery = 4.9
+
+              warning           = null
+
+              warning_recovery  = null
+
+              priority          = 4
+
+              notify            = " "
+
+            },
+
+          ]
+variable "heap_monitor_val" {
+
+  description = "List of heap monitors for all teams and their services"
+
+  type        = map(any)
+
+  default = {
+
+    team_1 = {
+
+      team_name = "TEAM_NAME_1"
+
+      services = [
+
+        {
+
+          name = "vizinsights"
+
+          tag_ciid = {
+
+            us     = "CI58685180"
+
+            eu     = "CI58685186"
+
+            au     = "CI58685184"
+
+            sg     = "CI58685188"
+
+          }
+
+          heap_monitor = [
+
+            {
+
+              alert_name = "vizinsights critical heap memory usage"
+
+              message    = "Vizinsights have critical heap memory usage"
+
+              critical   = 0.90
+
+              critical_recovery = 0.85
+
+              #priority   = 2
+
+              mon_priority = {}
+
+              notify     = " "
+
+            },
+
+            {
+
+              alert_name = "vizinsights high heap memory usage"
+
+              message    = "Vizinsights have high heap memory usage"
+
+              critical   = 0.80
+
+              critical_recovery = 0.75
+
+              #priority   = 3
+
+              mon_priority = {}
+
+              notify     = " "
+
+            }
+
+          ]
+
+        },
+
+        {
+
+          name = "tableau-service"
+
+          tag_ciid = {
+
+            us = "CI40687761"
+
+            au = "CI40687769"
+
+            eu = "CI40687311"
+
+            sg = "CI58685009"
+
+          }
+
+          heap_monitor = [
+
+            {
+
+              alert_name = "tableau-service critical heap memory usage"
+
+              message    = "Tableau-service have critical heap memory usage"
+
+              critical   = 0.98
+
+              critical_recovery = 0.95
+
+              #priority   = 2
+
+              mon_priority = {}
+
+              notify     = " "
+
+            },
+
+            {
+
+              alert_name = "tableau-service high heap memory usage"
+
+              message    = "Tableau-service have high heap memory usage"
+
+              critical   = 0.98
+
+              critical_recovery = 0.95
+
+              #priority   = 3
+
+              mon_priority = {}
+
+              notify     = " "
+
+            }
+
+          ]
+
+        },
+
+        {
+
+          name = "powerbi-service"
+
+          tag_ciid = {
+
+            us = "CI40696181"
+
+            au = "CI40696602"
+
+            eu = "CI40687780"
+
+            sg = "CI58685003"
+
+          }
+
+          heap_monitor = [
+
+            {
+
+              alert_name = "powerbi-service critical heap memory usage"
+
+              message    = "Powerbi-service have critical heap memory usage"
+
+              critical   = 0.90
+
+              critical_recovery = 0.85
+
+              #priority   = 2
+
+              mon_priority = {}              
+
+              notify     = " "
+
+            },
+
+            {
+
+              alert_name = "powerbi-service high heap memory usage"
+
+              message    = "Powerbi-service have high heap memory usage"
+
+              critical   = 0.85
+
+              critical_recovery = 0.80
+
+              #priority   = 3
+
+              mon_priority = {}
+
+              notify     = " "
+
+            }
+
+          ]
+
+        }
+
+      ]
+
+    },
+
+    team_2 = {
+
+      team_name = "TEAM_NAME_2"
+
+      services = [
+
+        {
+
+          name = "workspace-service"
+
+          tag_ciid = {
+
+            us = "CI116457421"
+
+            au = "CI41101427"
+
+            eu = "CI41101419"
+
+            sg = "CI58685029"
+
+          }
+
+          heap_monitor = [
+
+            {
+
+              alert_name = "workspace-service critical heap memory usage"
+
+              message    = "Workspace-service have critical heap memory usage"
+
+              critical   = 0.90
+
+              critical_recovery = 0.85
+
+              #priority   = 2
+
+              mon_priority = {}
+
+              notify     = " "
+
+            },
+
+            {
+
+              alert_name = "workspace-service high heap memory usage"
+
+              message    = "Workspace-service have high heap memory usage"
+
+              critical   = 0.75
+
+              critical_recovery = 0.70
+
+              #priority   = 3
+
+              mon_priority = {}
+
+              notify     = " "
+
+            }
+
+          ]
+
+        },
+
+        {
+
+          name = "engagement-service-v2"
+
+          tag_ciid = {
+
+            us     = "CI116457313"
+
+            au     = "CI116457315"
+
+            eu     = "CI116457317"
+
+            sg     = "CI116457319"
+
+          }
+
+          heap_monitor = [
+
+            {
+
+              alert_name = "engagement-service-v2 critical heap memory usage"
+
+              message    = "engagement-service-v2 have critical heap memory usage"
+
+              critical   = 0.90
+
+              critical_recovery = 0.85
+
+              #priority   = 2
+
+              mon_priority = {}
+
+              notify     = " "
+
+            },
+
+            {
+
+              alert_name = "engagement-service-v2 high heap memory usage"
+
+              message    = "engagement-service-v2 have high heap memory usage"
+
+              critical   = 0.75
+
+              critical_recovery = 0.70
+
+              #priority   = 3
+
+              mon_priority = {}
+
+              notify     = " "
+
+            }
+
+          ]
+
+        },
+
+        {
+
+          name = "fabric-api-v3"
+
+          tag_ciid = {
+
+            us     = "CI116457321"
+
+            au     = "CI116457324"
+
+            eu     = "CI116457326"
+
+            sg     = "CI116457328"
+
+          }
+
+          heap_monitor = [
+
+            {
+
+              alert_name = "fabric-api-v3 critical heap memory usage"
+
+              message    = "fabric-api-v3have critical heap memory usage"
+
+              critical   = 0.90
+
+              critical_recovery = 0.85
+
+              #priority   = 2
+
+              mon_priority = {}
+
+              notify     = " "
+
+            },
+
+            {
+
+              alert_name = "fabric-api-v3 high heap memory usage"
+
+              message    = "fabric-api-v3 have high heap memory usage"
+
+              critical   = 0.75
+
+              critical_recovery = 0.70
+
+              #priority   = 3
+
+              mon_priority = {}
+
+              notify     = " "
+
+            }
+
+          ]
+
+        }
+
+      ]
+
+    }
+
+  }
+
+}
+
+
+variable "cpu_monitor_val" {
+
+  description = "List of CPU monitors for all teams and their services"
+
+  type        = map(any)
+
+  default = {
+
+    team_1 = {
+
+      team_name = "TEAM_NAME_1"
+
+      services = [
+
+        {
+
+          name = "vizinsights"
+
+          tag_ciid = {
+
+            us     = "CI58685180"
+
+            eu     = "CI58685186"
+
+            au     = "CI58685184"
+
+            sg     = "CI58685188"
+
+          }
+
+          cpu_monitor = [
+
+            {
+
+              alert_name = "vizinsights critical CPU usage"
+
+              message    = "Vizinsights have critical CPU usage"
+
+              critical   = 1.50
+
+              critical_recovery = 1.40
+
+              priority   = 3
+
+              notify_non_prod = "@teams-Orca_Non_Prod_Alerts_Channel"
+
+              notify_prod = "@teams-Orca_Prod_Alerts_Channel"
+
+            },
+
+            {
+
+              alert_name = "vizinsights high CPU usage"
+
+              message    = "Vizinsights have high CPU usage"
+
+              critical   = 1.40
+
+              critical_recovery = 1.30
+
+              priority   = 3
+
+              notify_non_prod = "@teams-Orca_Non_Prod_Alerts_Channel"
+
+              notify_prod = "@teams-Orca_Prod_Alerts_Channel"
+
+            }
+
+          ]
+
+        },
+
+        {
+
+          name = "tableau-service"
+
+          tag_ciid = {
+
+            us = "CI40687761"
+
+            au = "CI40687769"
+
+            eu = "CI40687311"
+
+            sg = "CI58685009"
+
+          }
+
+          cpu_monitor = [
+
+            {
+
+              alert_name = "tableau-service critical CPU usage"
+
+              message    = "Tableau-service have critical CPU usage"
+
+              critical   = 0.90
+
+              critical_recovery = 0.85
+
+              priority   = 3
+
+              notify_non_prod = "@teams-Orca_Non_Prod_Alerts_Channel"
+
+              notify_prod = "@teams-Orca_Prod_Alerts_Channel"
+
+            },
+
+            {
+
+              alert_name = "tableau-service high CPU usage"
+
+              message    = "Tableau-service have high CPU usage"
+
+              critical   = 0.75
+
+              critical_recovery = 0.70
+
+              priority   = 3
+
+              notify_non_prod = "@teams-Orca_Non_Prod_Alerts_Channel"
+
+              notify_prod = "@teams-Orca_Prod_Alerts_Channel"
+
+            }
+
+          ]
+
+        },
+
+        {
+
+          name = "powerbi-service"
+
+          tag_ciid = {
+
+            us = "CI40696181"
+
+            au = "CI40696602"
+
+            eu = "CI40687780"
+
+            sg = "CI58685003"
+
+          }
+
+          cpu_monitor = [
+
+            {
+
+              alert_name = "powerbi-service critical CPU usage"
+
+              message    = "Powerbi-service have critical CPU usage"
+
+              critical   = 0.90
+
+              critical_recovery = 0.85
+
+              priority   = 3
+
+              notify_non_prod = "@teams-Orca_Non_Prod_Alerts_Channel"
+
+              notify_prod = "@teams-Orca_Prod_Alerts_Channel"
+
+            },
+
+            {
+
+              alert_name = "powerbi-service high CPU usage"
+
+              message    = "Powerbi-service have high CPU usage"
+
+              critical   = 0.75
+
+              critical_recovery = 0.70
+
+              priority   = 3
+
+              notify_non_prod = "@teams-Orca_Non_Prod_Alerts_Channel"
+
+              notify_prod = "@teams-Orca_Prod_Alerts_Channel"
+
+            }
+
+          ]
+
+        },
+
+        {
+
+          name = "django-engagement-admin"
+
+          tag_ciid = {
+
+            us = "CI116457299"
+
+            au = "CI116457301"
+
+            eu = "CI116457303"
+
+            sg = "CI116457305"
+
+          }
+
+          cpu_monitor = [
+
+            {
+
+              alert_name = "django-engagement-admin CPU alert"
+
+              message    = "django-engagement-admin CPU usage above threshold"
+
+              critical   = 0.90
+
+              priority   = 3
+
+              notify     = " "
+
+            }
+
+          ]
+
+        }
+
+      ]
+
+    },
+
+    team_2 = {
+
+      team_name = "TEAM_NAME_2"
+
+      services = [
+
+        {
+
+          name = "workspace-service"
+
+          tag_ciid = {
+
+            us = "CI116457421"
+
+            au = "CI41101427"
+
+            eu = "CI41101419"
+
+            sg = "CI58685029"
+
+          }
+
+          cpu_monitor = [
+
+            {
+
+              alert_name = "workspace-service critical CPU usage"
+
+              message    = "Workspace-service have critical CPU usage"
+
+              critical   = 0.90
+
+              critical_recovery = 0.85
+
+              priority   = 3
+
+              notify     = " "
+
+            },
+
+            {
+
+              alert_name = "workspace-service high CPU usage"
+
+              message    = "Workspace-service have high CPU usage"
+
+              critical   = 0.75
+
+              critical_recovery = 0.70
+
+              priority   = 3
+
+              notify     = " "
+
+            }
+
+          ]
+
+        },
+
+        {
+
+          name = "engagement-service-v2"
+
+          tag_ciid = {
+
+            us     = "CI116457313"
+
+            au     = "CI116457315"
+
+            eu     = "CI116457317"
+
+            sg     = "CI116457319"
+
+          }
+
+          cpu_monitor = [
+
+            {
+
+              alert_name = "engagement-service-v2 critical CPU usage"
+
+              message    = "engagement-service-v2 have critical CPU usage"
+
+              critical   = 0.90
+
+              critical_recovery = 0.85
+
+              priority   = 3
+
+              notify     = " "
+
+            },
+
+            {
+
+              alert_name = "engagement-service-v2 high CPU usage"
+
+              message    = "engagement-service-v2 have high CPU usage"
+
+              critical   = 0.75
+
+              critical_recovery = 0.70
+
+              priority   = 3
+
+              notify     = " "
+
+            }
+
+          ]
+
+        },
+
+        {
+
+          name = "fabric-api-v3"
+
+          tag_ciid = {
+
+            us     = "CI116457321"
+
+            au     = "CI116457324"
+
+            eu     = "CI116457326"
+
+            sg     = "CI116457328"  
+
+          }
+
+          cpu_monitor = [
+
+            {
+
+              alert_name = "fabric-api-v3 critical CPU usage"
+
+              message    = "fabric-api-v3 have critical CPU usage"
+
+              critical   = 0.90
+
+              critical_recovery = 0.85
+
+              priority   = 3
+
+              notify     = " "
+
+            },
+
+            {
+
+              alert_name = "fabric-api-v3 high CPU usage"
+
+              message    = "fabric-api-v3 have high CPU usage"
+
+              critical   = 0.75
+
+              critical_recovery = 0.70
+
+              priority   = 3
+
+              notify     = " "
+
+            }
+
+          ]
+
+        },
+
+      ]
+
+    },
+
+    team_3 = {
+
+      team_name = "TEAM_NAME_4"
+
+      services = [
+
+        {
+
+          name = "dcam-api"
+
+          tag_ciid = {
+
+            us = ""
+
+            au = ""
+
+            eu = ""
+
+            sg = ""
+
+          }
+
+          cpu_monitor = [
+
+            {
+
+              alert_name = "dcam-api critical CPU usage"
+
+              message    = "dcam-api have critical CPU usage"
+
+              critical   = 0.90
+
+              critical_recovery = 0.85
+
+              priority   = 3
+
+              notify     = " "
+
+            },
+
+            {
+
+              alert_name = "dcam-api high CPU usage"
+
+              message    = "dacm-api have high CPU usage"
+
+              critical   = 0.75
+
+              critical_recovery = 0.70
+
+              priority   = 3
+
+              notify     = " "
+
+            }
+
+          ]
+
+        }
+
+      ]
+
+    }    
+
+  }
+
+}
+
+variable "synthetics_monitors_custom_val" {
+
+  description = "List of log monitors for all teams and their services"
+
+  type        = map(any)
+
+  default = {
+
+    team_4 = {
+
+      team_name = "TEAM_NAME_3"
+
+      synthetics = [
+
+        {
+
+          service_name = "workbench-external"
+
+          tag_ciid = {
+
+            us = "CI117163299"
+
+            au = "CI117163301"
+
+            eu = "CI117163303"
+
+            sg = "CI117163305"
+
+          }
+
+          synthetics_monitor = [
+
+            {
+
+              name           = "Workbench External URL"
+
+              sythetics_type = "ssl"
+
+              mon_priority = {}              
+
+              synthetics_app_url = {
+
+                dev   = "us-dev.workbench.pwc.com"
+
+                qa    = "us-qa.workbench.pwc.com"
+
+                uat   = "us-uat.workbench.pwc.com"
+
+                usstg = "us-stg.workbench.pwc.com"
+
+                eustg = "eu-stg.workbench.pwc.com"
+
+                usprod = "us.workbench.pwc.com"
+
+                euprod = "eu.workbench.pwc.com"
+
+                auprod = "au.workbench.pwc.com"
+
+                sgprod = "sg.workbench.pwc.com"
+
+              }
+
+              assertions = [
+
+                {
+
+                  type     = "responseTime"
+
+                  operator = "lessThan"
+
+                  target   = 5000
+
+                },
+
+                {
+
+                  type     = "certificate"
+
+                  operator = "isInMoreThan"
+
+                  target   = 30
+
+                },
+
+              ]
+
+              test_port = "443"
+
+              type      = "api"
+
+              subtype   = "ssl"
+
+              message   = "{{host.name}}  has a certificate expiration date within 1 month."
+
+              #notify  = " "
+
+              notify_non_prod   = "@teams-Sea_Lions_Non_Prod_Alerts_Channel"
+
+              notify_prod       = "@teams-Sea_Lions_Prod_Alerts_Channel"
+
+            },
+
+          ]
+
+        }
+
+      ]
+
+    },
+
+  }
+
+}
+
+
+variable "legacy_apps" {
+
+  default = [
+
+    "aci-service",
+
+    "catalogue-service-v2",
+
+    "chapi-api",
+
+    "django-engagement-admin", "django-engagement-admin-Lite", "django-notification",
+
+    "dns-service",
+
+    "dp-event-hub-logs",
+
+    "kube-utility-service",
+
+    "kv-store",
+
+    "ldap-admin-service",
+
+    "memsql-admin",
+
+    "service-provisioning-api",
+
+    "vizinsights-migration",
+
+    "wbservices-api",
+
+    "workbench-node-api",
+
+    "workbench-node-api-redis",
+
+    "workbench-react-ui",
+
+    "workbench-skylight"
+
+  ]
+
+}
+
+###############################################################################
+
+
+
+# multi step synthetics monitor
+
+
+
+variable "synthetic_test_data_multi_step" {
+
+  default = {
+
+    accept_self_signed = true  # For SSL test, whether or not the test should allow self signed certificates.
+
+    tick_interval      = 43200 # Ping time interval
+
+    type               = "api"
+
+    subtype            = "multi"
+
+    wexp-bearer = {
+
+      dev    = "{{ DP_US_DEV_WEXP_BEARER }}"
+
+      qa     = "{{ DP_US_QA_WEXP_BEARER }}"
+
+      usstg  = "{{ DP_US_STG_WEXP_BEARER }}"
+
+      eustg  = "{{ DP_WE_STG_WEXP_BEARER }}"
+
+      euprod = "{{ DP_WE_PROD_WEXP_BEARER }}"
+
+      usprod = "{{ DP_US_PROD_WEXP_BEARER }}"
+
+      auprod = "{{ DP_AU_PROD_WEXP_BEARER }}"
+
+    }
+
+    x-csrf-token = {
+
+      dev    = "{{ DP_US_DEV_X_CSRF_TOKEN }}"
+
+      qa     = "{{ DP_US_QA_X_CSRF_TOKEN }}"
+
+      usstg  = "{{ DP_US_STG_X_CSRF_TOKEN }}"
+
+      eustg  = "{{ DP_WE_STG_X_CSRF_TOKEN }}"
+
+      euprod = "{{ DP_WE_PROD_X_CSRF_TOKEN }}"
+
+      usprod = "{{ DP_US_PROD_X_CSRF_TOKEN }}"
+
+      auprod = "{{ DP_AU_PROD_X_CSRF_TOKEN }}"
+
+    }
+
+    Authorization = {
+
+      dev    = "{{ DP_US_DEV_BEARER }}"
+
+      qa     = "{{ DP_US_QA_BEARER }}"
+
+      usstg  = "{{ DP_US_STG_BEARER }}"
+
+      eustg  = "{{ DP_WE_STG_BEARER }}"
+
+      euprod = "{{ DP_EU_PROD_BEARER }}"
+
+      usprod = "{{ DP_US_PROD_BEARER }}"
+
+      auprod = "{{ DP_AU_PROD_BEARER }}"
+
+    }
+
+  }
+
+}
+
+
+
+variable "global_variable" {
+
+  default = {
+
+    global_variable = {
+
+      value = [
+
+        {
+
+          name      = "WEXP_BEARER"
+
+          type      = "dynamic"
+
+          test_name = "workbench_node_api"
+
+          parse_test_options = [{
+
+            type = "http_body"
+
+            parser = {
+
+              type  = "json_path"
+
+              value = "$.data['wexp-bearer']"
+
+            }
+
+          }]
+
+        },
+
+        {
+
+          name  = "DP_TIMESTAMP"
+
+          type  = "static"
+
+          value = "{{ date(0d, MM-DD-YYYY) }}_{{ timestamp(0, s) }}"
+
+        },
+
+        {
+
+          name      = "X_CSRF_TOKEN"
+
+          type      = "dynamic"
+
+          test_name = "workbench_node_api"
+
+          parse_test_options = [{
+
+            type = "http_body"
+
+            parser = {
+
+              type  = "json_path"
+
+              value = "$.data['x-csrf-token']"
+
+            }
+
+          }]
+
+        }
+
+      ]
+
+    }
+
+  }
+
+}
+
+
+
+variable "cdf_nifi_metric_monitor_val" {
+
+  description = "List of nifi metric monitors for all teams and their services"
+
+  type        = map(any)
+
+  default = {
+
+    team_1 = {
+
+      team_name = "TEAM_NAME_1"
+
+      nifi_monitor = [
+
+        {
+
+          flowname = "alteryx-service",
+
+          tag_ciid = {
+
+            global = "CI116457423"
+
+            us = "CI116457241"
+
+            au = "CI116457243"
+
+            eu = "CI116457245"
+
+            sg = "CI116457247"
+
+          }
+
+          set_we_flag = true
+
+          notify_non_prod = "@teams-Orca_Non_Prod_Alerts_Channel"
+
+          notify_prod = "@teams-Orca_Prod_Alerts_Channel"
+
+          metrics = [
+
+            {
+
+              name = "FlowFilesQueued",
+
+              threshold = {
+
+                warning = null
+
+                warning_recovery = null
+
+                critical = {
+
+                  dev = 20000, qa = 20000, us_stg = 20000, eu_stg = 20000, us_prod = 20000, eu_prod = 20000, au_prod = 20000, sg_prod = 20000
+
+                }
+
+                critical_recovery = null
+
+              },
+
+              mon_priority = {
+
+                dev = 4, qa = 4, us_stg = 2, eu_stg = 2, us_prod = 2, eu_prod = 2, au_prod = 2, sg_prod = 2
+
+              }
+
+            },
+
+            {
+
+              name = "jvm.heap_usage",
+
+              threshold = {
+
+                warning = null
+
+                warning_recovery = null
+
+                critical = {
+
+                  dev = 80, qa = 80, us_stg = 80, eu_stg = 80, us_prod = 80, eu_prod = 80, au_prod = 80, sg_prod = 80
+
+                }
+
+                critical_recovery = null
+
+              },
+
+              mon_priority = {
+
+                dev = 4, qa = 4, us_stg = 3, eu_stg = 3, us_prod = 3, eu_prod = 3, au_prod = 3, sg_prod = 3
+
+              }
+
+            },
+
+          ]
+
+        },
+
+        {
+
+          flowname = "wb-activity-consume",
+
+          tag_ciid = {
+
+            us = "CI58685019"
+
+            au = "CI58685023"
+
+            eu = "CI58685025"
+
+            sg = "CI58685027"
+
+          }
+
+          set_we_flag = true
+
+          notify_non_prod = "@teams-Orca_Non_Prod_Alerts_Channel"
+
+          notify_prod = "@teams-Orca_Prod_Alerts_Channel"
+
+          metrics = [
+
+            {
+
+              name = "FlowFilesQueued",
+
+              threshold = {
+
+                warning = null
+
+                warning_recovery = null
+
+                critical = {
+
+                  dev = 20000, qa = 20000, us_stg = 20000, eu_stg = 20000, us_prod = 20000, eu_prod = 20000, au_prod = 20000, sg_prod = 20000
+
+                }
+
+                critical_recovery = null
+
+              },
+
+              mon_priority = {
+
+                dev = 4, qa = 4, us_stg = 2, eu_stg = 2, us_prod = 2, eu_prod = 2, au_prod = 2, sg_prod = 2
+
+              }
+
+            },
+
+            {
+
+              name = "jvm.heap_usage",
+
+              threshold = {
+
+                warning = null
+
+                warning_recovery = null
+
+                critical = {
+
+                  dev = 80, qa = 80, us_stg = 80, eu_stg = 80, us_prod = 80, eu_prod = 80, au_prod = 80, sg_prod = 80
+
+                }
+
+                critical_recovery = null
+
+              },
+
+              mon_priority = {
+
+                dev = 4, qa = 4, us_stg = 3, eu_stg = 3, us_prod = 3, eu_prod = 3, au_prod = 3, sg_prod = 3
+
+              }
+
+            },
+
+          ]
+
+        },
+
+        {
+
+          flowname = "nifi-viz-upload",
+
+          tag_ciid = {
+
+            us     = "CI58685180"
+
+            eu     = "CI58685186"
+
+            au     = "CI58685184"
+
+            sg     = "CI58685188"
+
+          }
+
+          set_we_flag = true
+
+          notify_non_prod = "@teams-Orca_Non_Prod_Alerts_Channel"
+
+          notify_prod = "@teams-Orca_Prod_Alerts_Channel"
+
+          metrics = [
+
+            {
+
+              name = "FlowFilesQueued",
+
+              threshold = {
+
+                warning = null
+
+                warning_recovery = null
+
+                critical = {
+
+                  dev = 20000, qa = 20000, us_stg = 20000, eu_stg = 20000, us_prod = 20000, eu_prod = 20000, au_prod = 20000, sg_prod = 20000
+
+                }
+
+                critical_recovery = null
+
+              },
+
+              mon_priority = {
+
+                dev = 4, qa = 4, us_stg = 2, eu_stg = 2, us_prod = 2, eu_prod = 2, au_prod = 2, sg_prod = 2
+
+              }
+
+            },
+
+            {
+
+              name = "jvm.heap_usage",
+
+              threshold = {
+
+                warning = null
+
+                warning_recovery = null
+
+                critical = {
+
+                  dev = 80, qa = 80, us_stg = 80, eu_stg = 80, us_prod = 80, eu_prod = 80, au_prod = 80, sg_prod = 80
+
+                }
+
+                critical_recovery = null
+
+              },
+
+              mon_priority = {
+
+                dev = 4, qa = 4, us_stg = 3, eu_stg = 3, us_prod = 3, eu_prod = 3, au_prod = 3, sg_prod = 3
+
+              }
+
+            },
+
+          ]
+
+        },
+
+        {
+
+          flowname = "nifi-viz-powerbi",
+
+          tag_ciid = {
+
+            us     = "CI58685180"
+
+            eu     = "CI58685186"
+
+            au     = "CI58685184"
+
+            sg     = "CI58685188"
+
+          }
+
+          set_we_flag = true
+
+          notify_non_prod = "@teams-Orca_Non_Prod_Alerts_Channel"
+
+          notify_prod = "@teams-Orca_Prod_Alerts_Channel"
+
+          metrics = [
+
+            {
+
+              name = "FlowFilesQueued",
+
+              threshold = {
+
+                warning = null
+
+                warning_recovery = null
+
+                critical = {
+
+                  dev = 20000, qa = 20000, us_stg = 20000, eu_stg = 20000, us_prod = 20000, eu_prod = 20000, au_prod = 20000, sg_prod = 20000
+
+                }
+
+                critical_recovery = null
+
+              },
+
+              mon_priority = {
+
+                dev = 4, qa = 4, us_stg = 2, eu_stg = 2, us_prod = 2, eu_prod = 2, au_prod = 2, sg_prod = 2
+
+              }
+
+            },
+
+            {
+
+              name = "jvm.heap_usage",
+
+              threshold = {
+
+                warning = null
+
+                warning_recovery = null
+
+                critical = {
+
+                  dev = 80, qa = 80, us_stg = 80, eu_stg = 80, us_prod = 80, eu_prod = 80, au_prod = 80, sg_prod = 80
+
+                }
+
+                critical_recovery = null
+
+              },
+
+              mon_priority = {
+
+                dev = 4, qa = 4, us_stg = 3, eu_stg = 3, us_prod = 3, eu_prod = 3, au_prod = 3, sg_prod = 3
+
+              }
+
+            },
+
+          ]
+
+        },
+
+        {
+
+          flowname = "nifi-pbi-activity",
+
+          tag_ciid = {
+
+            us     = "CI58685180"
+
+            eu     = "CI58685186"
+
+            au     = "CI58685184"
+
+            sg     = "CI58685188"
+
+          }
+
+          set_we_flag = true
+
+          notify_non_prod = "@teams-Orca_Non_Prod_Alerts_Channel"
+
+          notify_prod = "@teams-Orca_Prod_Alerts_Channel"
+
+          metrics = [
+
+            {
+
+              name = "FlowFilesQueued",
+
+              threshold = {
+
+                warning = null
+
+                warning_recovery = null
+
+                critical = {
+
+                  dev = 20000, qa = 20000, us_stg = 20000, eu_stg = 20000, us_prod = 20000, eu_prod = 20000, au_prod = 20000, sg_prod = 20000
+
+                }
+
+                critical_recovery = null
+
+              },
+
+              mon_priority = {
+
+                dev = 4, qa = 4, us_stg = 3, eu_stg = 3, us_prod = 3, eu_prod = 3, au_prod = 3, sg_prod = 3
+
+              }
+
+            },
+
+            {
+
+              name = "jvm.heap_usage",
+
+              threshold = {
+
+                warning = null
+
+                warning_recovery = null
+
+                critical = {
+
+                  dev = 80, qa = 80, us_stg = 80, eu_stg = 80, us_prod = 80, eu_prod = 80, au_prod = 80, sg_prod = 80
+
+                }
+
+                critical_recovery = null
+
+              },
+
+              mon_priority = {
+
+                dev = 4, qa = 4, us_stg = 3, eu_stg = 3, us_prod = 3, eu_prod = 3, au_prod = 3, sg_prod = 3
+
+              }
+
+            }
+
+          ]
+
+        },
+
+        {
+
+          flowname = "nifi_tableau_activity",
+
+          tag_ciid = {
+
+            us     = "CI58685180"
+
+            eu     = "CI58685186"
+
+            au     = "CI58685184"
+
+            sg     = "CI58685188"
+
+          }
+
+          set_we_flag = true
+
+          notify_non_prod = "@teams-Orca_Non_Prod_Alerts_Channel"
+
+          notify_prod = "@teams-Orca_Prod_Alerts_Channel"
+
+          metrics = [
+
+            {
+
+              name = "FlowFilesQueued",
+
+              threshold = {
+
+                warning = null
+
+                warning_recovery = null
+
+                critical = {
+
+                  dev = 20000, qa = 20000, us_stg = 20000, eu_stg = 20000, us_prod = 20000, eu_prod = 20000, au_prod = 20000, sg_prod = 20000
+
+                }
+
+                critical_recovery = null
+
+              },
+
+              mon_priority = {
+
+                dev = 4, qa = 4, us_stg = 3, eu_stg = 3, us_prod = 3, eu_prod = 3, au_prod = 3, sg_prod = 3
+
+              }
+
+            },
+
+            {
+
+              name = "jvm.heap_usage",
+
+              threshold = {
+
+                warning = null
+
+                warning_recovery = null
+
+                critical = {
+
+                  dev = 80, qa = 80, us_stg = 80, eu_stg = 80, us_prod = 80, eu_prod = 80, au_prod = 80, sg_prod = 80
+
+                }
+
+                critical_recovery = null
+
+              },
+
+              mon_priority = {
+
+                dev = 4, qa = 4, us_stg = 3, eu_stg = 3, us_prod = 3, eu_prod = 3, au_prod = 3, sg_prod = 3
+
+              }
+
+            }
+
+          ]
+
+        },
+
+        {
+
+          flowname = "viz-asset-process",
+
+          tag_ciid = {
+
+            us     = "CI58685180"
+
+            eu     = "CI58685186"
+
+            au     = "CI58685184"
+
+            sg     = "CI58685188"
+
+          }
+
+          set_we_flag = true
+
+          notify_non_prod = "@teams-Orca_Non_Prod_Alerts_Channel"
+
+          notify_prod = "@teams-Orca_Prod_Alerts_Channel"
+
+          metrics = [
+
+            {
+
+              name = "FlowFilesQueued",
+
+              threshold = {
+
+                warning = null
+
+                warning_recovery = null
+
+                critical = {
+
+                  dev = 20000, qa = 20000, us_stg = 20000, eu_stg = 20000, us_prod = 20000, eu_prod = 20000, au_prod = 20000, sg_prod = 20000
+
+                }
+
+                critical_recovery = null
+
+              },
+
+              mon_priority = {
+
+                dev = 4, qa = 4, us_stg = 2, eu_stg = 2, us_prod = 2, eu_prod = 2, au_prod = 2, sg_prod = 2
+
+              }
+
+            },
+
+            {
+
+              name = "jvm.heap_usage",
+
+              threshold = {
+
+                warning = null
+
+                warning_recovery = null
+
+                critical = {
+
+                  dev = 80, qa = 80, us_stg = 80, eu_stg = 80, us_prod = 80, eu_prod = 80, au_prod = 80, sg_prod = 80
+
+                }
+
+                critical_recovery = null
+
+              },
+
+              mon_priority = {
+
+                dev = 4, qa = 4, us_stg = 3, eu_stg = 3, us_prod = 3, eu_prod = 3, au_prod = 3, sg_prod = 3
+
+              }
+
+            }
+
+          ]
+
+        },
+
+        {
+
+          flowname = "viz-approval-sync",
+
+          tag_ciid = {
+
+            us     = "CI58685180"
+
+            eu     = "CI58685186"
+
+            au     = "CI58685184"
+
+            sg     = "CI58685188"
+
+          }
+
+          set_we_flag = true
+
+          notify_non_prod = "@teams-Orca_Non_Prod_Alerts_Channel"
+
+          notify_prod = "@teams-Orca_Prod_Alerts_Channel"
+
+          metrics = [
+
+            {
+
+              name = "FlowFilesQueued",
+
+              threshold = {
+
+                warning = null
+
+                warning_recovery = null
+
+                critical = {
+
+                  dev = 20000, qa = 20000, us_stg = 20000, eu_stg = 20000, us_prod = 20000, eu_prod = 20000, au_prod = 20000, sg_prod = 20000
+
+                }
+
+                critical_recovery = null
+
+              },
+
+              mon_priority = {
+
+                dev = 4, qa = 4, us_stg = 2, eu_stg = 2, us_prod = 2, eu_prod = 2, au_prod = 2, sg_prod = 2
+
+              }
+
+            },
+
+            {
+
+              name = "jvm.heap_usage",
+
+              threshold = {
+
+                warning = null
+
+                warning_recovery = null
+
+                critical = {
+
+                  dev = 80, qa = 80, us_stg = 80, eu_stg = 80, us_prod = 80, eu_prod = 80, au_prod = 80, sg_prod = 80
+
+                }
+
+                critical_recovery = null
+
+              },
+
+              mon_priority = {
+
+                dev = 4, qa = 4, us_stg = 3, eu_stg = 3, us_prod = 3, eu_prod = 3, au_prod = 3, sg_prod = 3
+
+              }
+
+            }
+
+          ]
+
+        },
+
+        {
+
+          flowname = "nifi-viz-bi-activity",
+
+          tag_ciid = {
+
+            us     = "CI58685180"
+
+            eu     = "CI58685186"
+
+            au     = "CI58685184"
+
+            sg     = "CI58685188"
+
+          }
+
+          set_we_flag = true
+
+          notify_non_prod = "@teams-Orca_Non_Prod_Alerts_Channel"
+
+          notify_prod = "@teams-Orca_Prod_Alerts_Channel"
+
+          metrics = [
+
+            {
+
+              name = "FlowFilesQueued",
+
+              threshold = {
+
+                warning = null
+
+                warning_recovery = null
+
+                critical = {
+
+                  dev = 20000, qa = 20000, us_stg = 20000, eu_stg = 20000, us_prod = 20000, eu_prod = 20000, au_prod = 20000, sg_prod = 20000
+
+                }
+
+                critical_recovery = null
+
+              },
+
+              mon_priority = {
+
+                dev = 4, qa = 4, us_stg = 3, eu_stg = 3, us_prod = 3, eu_prod = 3, au_prod = 3, sg_prod = 3
+
+              }
+
+            },
+
+            {
+
+              name = "jvm.heap_usage",
+
+              threshold = {
+
+                warning = null
+
+                warning_recovery = null
+
+                critical = {
+
+                  dev = 80, qa = 80, us_stg = 80, eu_stg = 80, us_prod = 80, eu_prod = 80, au_prod = 80, sg_prod = 80
+
+                }
+
+                critical_recovery = null
+
+              },
+
+              mon_priority = {
+
+                dev = 4, qa = 4, us_stg = 3, eu_stg = 3, us_prod = 3, eu_prod = 3, au_prod = 3, sg_prod = 3
+
+              }
+
+            }
+
+          ]
+
+        },
+
+        {
+
+          flowname = "viz-workspace-sync",
+
+          tag_ciid = {
+
+            us     = "CI58685180"
+
+            eu     = "CI58685186"
+
+            au     = "CI58685184"
+
+            sg     = "CI58685188"
+
+          }
+
+          set_we_flag = true
+
+          notify_non_prod = "@teams-Orca_Non_Prod_Alerts_Channel"
+
+          notify_prod = "@teams-Orca_Prod_Alerts_Channel"
+
+          metrics = [
+
+            {
+
+              name = "FlowFilesQueued",
+
+              threshold = {
+
+                warning = null
+
+                warning_recovery = null
+
+                critical = {
+
+                  dev = 20000, qa = 20000, us_stg = 20000, eu_stg = 20000, us_prod = 20000, eu_prod = 20000, au_prod = 20000, sg_prod = 20000
+
+                }
+
+                critical_recovery = null
+
+              },
+
+              mon_priority = {
+
+                dev = 4, qa = 4, us_stg = 2, eu_stg = 2, us_prod = 2, eu_prod = 2, au_prod = 2, sg_prod = 2
+
+              }
+
+            },
+
+            {
+
+              name = "jvm.heap_usage",
+
+              threshold = {
+
+                warning = null
+
+                warning_recovery = null
+
+                critical = {
+
+                  dev = 80, qa = 80, us_stg = 80, eu_stg = 80, us_prod = 80, eu_prod = 80, au_prod = 80, sg_prod = 80
+
+                }
+
+                critical_recovery = null
+
+              },
+
+              mon_priority = {
+
+                dev = 4, qa = 4, us_stg = 3, eu_stg = 3, us_prod = 3, eu_prod = 3, au_prod = 3, sg_prod = 3
+
+              }
+
+            }
+
+          ]
+
+        },
+
+        {
+
+          flowname = "nifi-viz-tableau",
+
+          tag_ciid = {
+
+            us     = "CI58685180"
+
+            eu     = "CI58685186"
+
+            au     = "CI58685184"
+
+            sg     = "CI58685188"
+
+          }
+
+          set_we_flag = true
+
+          notify_non_prod = "@teams-Orca_Non_Prod_Alerts_Channel"
+
+          notify_prod = "@teams-Orca_Prod_Alerts_Channel"
+
+          metrics = [
+
+            {
+
+              name = "FlowFilesQueued",
+
+              threshold = {
+
+                warning = null
+
+                warning_recovery = null
+
+                critical = {
+
+                  dev = 20000, qa = 20000, us_stg = 20000, eu_stg = 20000, us_prod = 20000, eu_prod = 20000, au_prod = 20000, sg_prod = 20000
+
+                }
+
+                critical_recovery = null
+
+              },
+
+              mon_priority = {
+
+                dev = 4, qa = 4, us_stg = 2, eu_stg = 2, us_prod = 2, eu_prod = 2, au_prod = 2, sg_prod = 2
+
+              }
+
+            },
+
+            {
+
+              name = "jvm.heap_usage",
+
+              threshold = {
+
+                warning = null
+
+                warning_recovery = null
+
+                critical = {
+
+                  dev = 80, qa = 80, us_stg = 80, eu_stg = 80, us_prod = 80, eu_prod = 80, au_prod = 80, sg_prod = 80
+
+                }
+
+                critical_recovery = null
+
+              },
+
+              mon_priority = {
+
+                dev = 4, qa = 4, us_stg = 3, eu_stg = 3, us_prod = 3, eu_prod = 3, au_prod = 3, sg_prod = 3
+
+              }
+
+            },
+
+          ]
+
+        }
+
+      ]
+
+    },
+
+    team_2 = {
+
+      team_name = "TEAM_NAME_2"
+
+      nifi_monitor = [
+
+        {
+
+          flowname = "google-dir-events",
+
+          tag_ciid = {
+
+            global = "CI40696181"
+
+            us     = "CI116457367"
+
+            au     = "CI116457369"
+
+            eu     = "CI116457371"
+
+            sg     = "CI116457373"
+
+          }
+
+          set_we_flag = true
+
+          notify_non_prod = ""
+
+          notify_prod = ""
+
+          metrics = [
+
+            {
+
+              name = "FlowFilesQueued",
+
+              threshold = {
+
+                warning = null
+
+                warning_recovery = null
+
+                critical = {
+
+                  dev = 5000, qa = 5000, us_stg = 3000, eu_stg = 2500, us_prod = 3000, eu_prod = 2500, au_prod = 2500, sg_prod = 2500
+
+                }
+
+                critical_recovery = null
+
+              },
+
+              mon_priority = {
+
+                dev = 4, qa = 4, us_stg = 3, eu_stg = 3, us_prod = 3, eu_prod = 3, au_prod = 3, sg_prod = 3
+
+              }
+
+            },
+
+            {
+
+              name = "jvm.heap_usage",
+
+              threshold = {
+
+                warning = null
+
+                warning_recovery = null
+
+                critical = {
+
+                  dev = 80, qa = 80, us_stg = 80, eu_stg = 80, us_prod = 80, eu_prod = 80, au_prod = 80, sg_prod = 80
+
+                }
+
+                critical_recovery = null
+
+              },
+
+              mon_priority = {
+
+                dev = 4, qa = 4, us_stg = 3, eu_stg = 3, us_prod = 3, eu_prod = 3, au_prod = 3, sg_prod = 3
+
+              }
+
+            },
+
+          ]
+
+        },
+
+        {
+
+          flowname = "workbench-asset-blob-event-processing",
+
+          tag_ciid = {
+
+            global = "CI40696181"
+
+            us     = "CI116457367"
+
+            au     = "CI116457369"
+
+            eu     = "CI116457371"
+
+            sg     = "CI116457373"
+
+          }
+
+          set_we_flag = true
+
+          notify_non_prod = ""
+
+          notify_prod = ""
+
+          metrics = [
+
+            {
+
+              name = "FlowFilesQueued",
+
+              threshold = {
+
+                warning = null
+
+                warning_recovery = null
+
+                critical = {
+
+                  dev = 5000, qa = 5000, us_stg = 12000, eu_stg = 12000, us_prod = 265000, eu_prod = 65000, au_prod = 2500, sg_prod = 5000
+
+                }
+
+                c
+
+
+
+
+
+
+
+
 
 
 
