@@ -1,0 +1,207 @@
+on:
+  workflow_call:
+    inputs:
+      script:
+        description: Script to be executed
+        type: string
+        required: true
+      load_secrets_to_script_env:
+        description: Load secrets context into env variables so they can be used in script
+        type: boolean
+        required: false
+        default: false
+      checkout_configs_repo:
+        description: Checkout configs repo
+        type: boolean
+        required: false
+        default: false
+      vault_secrets_path:
+        description: Required when values from Vault needs to be fetched
+        type: string
+        required: false
+        default: ''
+      artifact_repo:
+        description: Repository name, required when an artifact needs to be created during build process
+        type: string
+        required: false
+        default: ''
+      artifact_repo_branch:
+        description: Repository branch when an artifact needs to be created during build process
+        type: string
+        required: false
+        default: ''
+      set_aks_context:
+        description: Set AKS context
+        type: boolean
+        required: false
+        default: false
+      us_dev_deploy:
+        type: boolean
+        required: true
+      us_qa_deploy:
+        type: boolean
+        required: true
+      us_stage_deploy:
+        type: boolean
+        required: true
+      eu_stage_deploy:
+        type: boolean
+        required: true
+      us_prod_deploy:
+        type: boolean
+        required: true
+      eu_prod_deploy:
+        type: boolean
+        required: true
+      au_prod_deploy:
+        type: boolean
+        required: true
+      sg_prod_deploy:
+        type: boolean
+        required: true
+
+permissions:
+  contents: read
+  id-token: write
+ 
+jobs:
+  build:
+    name: Create artifact
+    runs-on:
+      group: WB-US-DEV-BUILD-RUNNERS
+    if: ${{ inputs.artifact_repo != '' }}
+    steps:
+      - name: Checkout ${{ inputs.artifact_repo }}
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.artifact_repo }}
+          token: ${{ secrets.WB_GITHUB_TOKEN }}
+          ref: ${{ inputs.artifact_repo_branch }}
+          path: artifact
+      - name: Create artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifact
+          path: ./artifact
+
+  us_dev_deploy:
+    name: us-dev deploy
+    if: ${{ !failure() && !cancelled() && inputs.us_dev_deploy }}
+    needs: [build]
+    uses: ./.github/workflows/_script-execution.yaml
+    with:
+      environment: us-dev
+      script: ${{ inputs.script }}
+      load_secrets_to_script_env: ${{ inputs.load_secrets_to_script_env }}
+      checkout_configs_repo: ${{ inputs.checkout_configs_repo }}
+      vault_secrets_path: ${{ inputs.vault_secrets_path }}
+      download_artifact: ${{ inputs.artifact_repo != '' && 'artifact' || '' }}
+      set_aks_context: ${{ inputs.set_aks_context }}
+    secrets: inherit
+
+  us_qa_deploy:
+    name: us-qa deploy
+    if: ${{ !failure() && !cancelled() && inputs.us_qa_deploy }}
+    needs: [us_dev_deploy]
+    uses: ./.github/workflows/_script-execution.yaml
+    with:
+      environment: us-qa
+      script: ${{ inputs.script }}
+      load_secrets_to_script_env: ${{ inputs.load_secrets_to_script_env }}
+      checkout_configs_repo: ${{ inputs.checkout_configs_repo }}
+      vault_secrets_path: ${{ inputs.vault_secrets_path }}
+      download_artifact: ${{ inputs.artifact_repo != '' && 'artifact' || '' }}
+      set_aks_context: ${{ inputs.set_aks_context }}
+    secrets: inherit
+
+  us_stage_deploy:
+    name: us-stage deploy
+    if: ${{ !failure() && !cancelled() && inputs.us_stage_deploy }}
+    needs: [us_qa_deploy]
+    uses: ./.github/workflows/_script-execution.yaml
+    with:
+      environment: us-stage
+      script: ${{ inputs.script }}
+      load_secrets_to_script_env: ${{ inputs.load_secrets_to_script_env }}
+      checkout_configs_repo: ${{ inputs.checkout_configs_repo }}
+      vault_secrets_path: ${{ inputs.vault_secrets_path }}
+      download_artifact: ${{ inputs.artifact_repo != '' && 'artifact' || '' }}
+      set_aks_context: ${{ inputs.set_aks_context }}
+    secrets: inherit
+
+  eu_stage_deploy:
+    name: eu-stage deploy
+    if: ${{ !failure() && !cancelled() && inputs.eu_stage_deploy }}
+    needs: [us_stage_deploy]
+    uses: ./.github/workflows/_script-execution.yaml
+    with:
+      environment: eu-stage
+      script: ${{ inputs.script }}
+      load_secrets_to_script_env: ${{ inputs.load_secrets_to_script_env }}
+      checkout_configs_repo: ${{ inputs.checkout_configs_repo }}
+      vault_secrets_path: ${{ inputs.vault_secrets_path }}
+      download_artifact: ${{ inputs.artifact_repo != '' && 'artifact' || '' }}
+      set_aks_context: ${{ inputs.set_aks_context }}
+    secrets: inherit
+
+  us_prod_deploy:
+    name: us-prod deploy
+    if: ${{ !failure() && !cancelled() && inputs.us_prod_deploy }}
+    needs: [eu_stage_deploy]
+    uses: ./.github/workflows/_script-execution.yaml
+    with:
+      environment: us-prod
+      script: ${{ inputs.script }}
+      load_secrets_to_script_env: ${{ inputs.load_secrets_to_script_env }}
+      checkout_configs_repo: ${{ inputs.checkout_configs_repo }}
+      vault_secrets_path: ${{ inputs.vault_secrets_path }}
+      download_artifact: ${{ inputs.artifact_repo != '' && 'artifact' || '' }}
+      set_aks_context: ${{ inputs.set_aks_context }}
+    secrets: inherit
+
+  eu_prod_deploy:
+    name: eu-prod deploy
+    if: ${{ !failure() && !cancelled() && inputs.eu_prod_deploy }}
+    needs: [eu_stage_deploy]
+    uses: ./.github/workflows/_script-execution.yaml
+    with:
+      environment: eu-prod
+      script: ${{ inputs.script }}
+      load_secrets_to_script_env: ${{ inputs.load_secrets_to_script_env }}
+      checkout_configs_repo: ${{ inputs.checkout_configs_repo }}
+      vault_secrets_path: ${{ inputs.vault_secrets_path }}
+      download_artifact: ${{ inputs.artifact_repo != '' && 'artifact' || '' }}
+      set_aks_context: ${{ inputs.set_aks_context }}
+    secrets: inherit
+
+  au_prod_deploy:
+    name: au-prod deploy
+    if: ${{ !failure() && !cancelled() && inputs.au_prod_deploy }}
+    needs: [eu_stage_deploy]
+    uses: ./.github/workflows/_script-execution.yaml
+    with:
+      environment: au-prod
+      script: ${{ inputs.script }}
+      load_secrets_to_script_env: ${{ inputs.load_secrets_to_script_env }}
+      checkout_configs_repo: ${{ inputs.checkout_configs_repo }}
+      vault_secrets_path: ${{ inputs.vault_secrets_path }}
+      download_artifact: ${{ inputs.artifact_repo != '' && 'artifact' || '' }}
+      set_aks_context: ${{ inputs.set_aks_context }}
+    secrets: inherit
+
+  sg_prod_deploy:
+    name: sg-prod deploy
+    if: ${{ !failure() && !cancelled() && inputs.sg_prod_deploy }}
+    needs: [eu_stage_deploy]
+    uses: ./.github/workflows/_script-execution.yaml
+    with:
+      environment: sg-prod
+      script: ${{ inputs.script }}
+      load_secrets_to_script_env: ${{ inputs.load_secrets_to_script_env }}
+      checkout_configs_repo: ${{ inputs.checkout_configs_repo }}
+      vault_secrets_path: ${{ inputs.vault_secrets_path }}
+      download_artifact: ${{ inputs.artifact_repo != '' && 'artifact' || '' }}
+      set_aks_context: ${{ inputs.set_aks_context }}
+    secrets: inherit
+
+
