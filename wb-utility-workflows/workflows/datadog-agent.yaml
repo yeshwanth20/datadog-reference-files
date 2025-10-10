@@ -1,0 +1,169 @@
+name: datadog - Deploy agent
+
+run-name: ${{ inputs.action }} Datadog Agent
+
+permissions:
+  contents: read
+  id-token: write
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: Action for DataDog Agents
+        default: 'Install'
+        required: true
+        type: choice
+        options:
+        - Install
+        - Un-Install
+      sre-automation-branch:
+        description: Get configs from branch
+        required: true
+        type: string
+        default: 'develop'
+      enable-log:
+        description: Enable log ingestion for workloads?
+        required: true
+        type: boolean
+        default: true
+      us-dev-deploy:
+        description: Deploy to US Dev
+        type: boolean
+        default: true
+      us-qa-deploy:
+        description: Deploy to US QA
+        type: boolean
+        default: false
+      us-stage-deploy:
+        description: Deploy to US Stage
+        type: boolean
+        default: false
+      eu-stage-deploy:
+        description: Deploy to EU Stage
+        type: boolean
+        default: false
+      prod-deploy:
+        description: Deploy to US,EU,AU,SG Prod
+        type: boolean
+        default: false
+
+jobs:
+  dd-agent:
+    name: ${{inputs.action}} Datadog Agent
+    uses: ./.github/workflows/_multi-env-script-execution.yaml
+    with:
+      checkout_configs_repo: false
+      vault_secrets_path: infra/datadog/dd-innovation-agent-keys
+      artifact_repo: pwc-gx-ifs-quality/sre-automation
+      artifact_repo_branch: ${{ inputs.sre-automation-branch }}
+      set_aks_context: true
+      script: |
+        set -e  # Exit on any error
+
+        # Function to print messages with formatting
+        print_message() {
+          printf "\n%s\n" "$1"
+          printf "%s\n" "------------------------------------------------"
+        }
+
+        # Function to install Datadog agents
+        install_datadog() {
+          print_message "Installing Datadog agents in cluster"
+          
+          print_message "Creating datadog namespace"
+          kubectl create namespace datadog 2>/dev/null || true
+
+          # Read Datadog configurations from the YAML file
+          print_message "Reading Chart Version for Datadog"
+          eval "$(yq -r '.datadog // {} | to_entries[] | "export \(.key)=\(.value | @sh)"' artifact/helm-charts-version.yml)"
+
+          print_message "Installing Datadog Operator"
+          helm repo add datadog https://helm.datadoghq.com
+          helm upgrade --install datadog-operator datadog/datadog-operator \
+            --version "$DATADOG_OPERATOR" \
+            --namespace datadog \
+            -f artifact/datadog/workbench/operator-values.yml \
+            --set apiKey="$DD_API_KEY" \
+            --set appKey="$DD_APP_KEY" \
+            --wait
+
+          print_message "Applying Datadog Agent manifest"
+          local agent_config_file
+
+          if [[ "${{ inputs.us-dev-deploy }}" == "true" || "${{ inputs.us-qa-deploy }}" == "true" ]]; then
+            # Update configuration for log collection in lower environment
+            agent_config_file="artifact/datadog/workbench/agent-config-lower.yml"
+            yq -i 'with(.spec.features.logCollection; .enabled = ${{inputs.enable-log}} | .containerCollectAll = ${{inputs.enable-log}})' "$agent_config_file"
+
+            kubectl apply -f "$agent_config_file"
+
+            print_message "Applying Weekly Cronjob manifest"
+            kubectl apply -f artifact/datadog/workbench/weekly-cronjobs.yml
+          else
+            agent_config_file="artifact/datadog/workbench/agent-config.yml"
+            kubectl apply -f "$agent_config_file"
+          fi
+        }
+
+        # Function to uninstall Datadog agents
+        uninstall_datadog() {
+          print_message "Un-Installing Datadog agents from cluster"
+
+          # Check if DataDog agent exists before deleting
+          if kubectl get datadogagent datadog --namespace datadog >/dev/null 2>&1; then
+            print_message "DataDog agent found, deleting..."
+            kubectl delete datadogagent datadog --namespace datadog
+          else
+            print_message "DataDog agent not found, skipping deletion"
+          fi
+
+          # Check if DataDog operator exists before deleting
+          if helm list --namespace datadog | grep -q datadog-operator; then
+            print_message "DataDog operator found, deleting..."
+            helm delete datadog-operator --namespace datadog
+          else
+            print_message "DataDog operator not found, skipping deletion"
+          fi
+
+          if [[ "${{ inputs.us-dev-deploy }}" == "true" || "${{ inputs.us-qa-deploy }}" == "true" ]]; then
+            print_message "Un-Installing Weekly Cronjob from cluster"
+            # Check if the cronjobs exist before deleting
+            if kubectl get -f artifact/datadog/workbench/weekly-cronjobs.yml >/dev/null 2>&1; then
+              kubectl delete -f artifact/datadog/workbench/weekly-cronjobs.yml
+            else
+              print_message "Weekly cronjobs not found, skipping deletion"
+            fi
+          fi
+        }
+
+        # Main script execution based on the specified action
+        case "${{ inputs.action }}" in
+          "Install")
+            uninstall_datadog
+            print_message "Sleeping for 60 seconds"
+            sleep 60
+            install_datadog
+            ;;
+          "Un-Install")
+            uninstall_datadog
+            ;;
+          *)
+            print_message "The selected action is invalid"
+            echo "Available actions:"
+            echo "- Install"
+            echo "- Un-Install"
+            exit 1
+            ;;
+        esac
+      us_dev_deploy: ${{ inputs.us-dev-deploy }}
+      us_qa_deploy: ${{ inputs.us-qa-deploy }}
+      us_stage_deploy: ${{ inputs.us-stage-deploy }}
+      eu_stage_deploy: ${{ inputs.eu-stage-deploy }}
+      us_prod_deploy: ${{ inputs.prod-deploy }}
+      eu_prod_deploy: ${{ inputs.prod-deploy }}
+      au_prod_deploy: ${{ inputs.prod-deploy }}
+      sg_prod_deploy: ${{ inputs.prod-deploy }}
+    secrets: inherit
+
+
