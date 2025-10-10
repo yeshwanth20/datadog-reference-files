@@ -1,0 +1,107 @@
+name: Deploy Datadog Terrarm Stage
+run-name: ${{ github.actor }} is deploying Datadog Terrarm Stage from ${{ github.ref_name }} branch
+on: 
+  workflow_dispatch:
+    inputs:
+      tf_plan:
+        description: 'Run TF Plan'
+        required: false
+        type: boolean
+      tf_apply:
+        description: 'Run TF Apply'
+        required: false
+        type: boolean
+  push:
+      paths:
+      - terraform/env/deploy_all_non_multistep_api/variables_higher_non_prod.tf
+  
+env:
+  TF_CLOUD_ORGANIZATION: ${{ vars.TFE_CLOUD_ORGANIZATION }}
+  TF_HOSTNAME: ${{ vars.TFE_URI }}
+  CONFIG_DIRECTORY: "./terraform"
+  TFE_WORKSPACE: "platform-datadog-terraform-github-actions-non-prod"
+  
+jobs:
+  terraform:
+    runs-on:
+      group: ${{ vars.GA_RUNNER_GROUP }}
+    defaults:
+      run:
+        working-directory: ./terraform
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.2.1
+      
+      - name: Fetch Vault secrets
+        uses: hashicorp/vault-action@v3.0.0
+        with:
+          url: ${{ vars.VAULT_URI }}
+          method: approle
+          roleId: ${{ secrets.VAULT_ROLE_ID }}
+          secretId: ${{ secrets.VAULT_SECRET_ID }}
+          tlsSkipVerify: true
+          namespace: ifs/czqeo/sre-gbl-001
+          secrets: |
+            kv/data/datadog TF_API_TOKEN | TF_API_TOKEN;
+            kv/data/datadog API_URL | API_URL;
+            kv/data/datadog API_KEY | API_KEY;
+            kv/data/datadog APP_KEY | APP_KEY;
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3.1.2
+        with:
+          cli_config_credentials_hostname: ${{ env.TF_HOSTNAME }}
+          cli_config_credentials_token: ${{ env.TF_API_TOKEN }}
+          terraform_version: 0.13.7
+
+      - name: Set up environment
+        run: |
+          sudo apt update
+          sudo apt install -y wget unzip curl gpg gettext
+      
+      - name: Install and Use Node.js 20
+        uses: actions/setup-node@v4.0.4
+        with:
+          node-version: latest
+                
+      - name: Replace token
+        run: |
+          envsubst < "providers.tfvars" > "providers.auto.tfvars";
+          envsubst < "backend.conf" > "backend.auto.conf"
+        
+      - name: Copy Terraform files
+        run: |
+          rm -rf env/deploy_all_non_multistep_api/variables_higher.tf;
+          rm -rf env/deploy_all_non_multistep_api/variables_lower.tf;
+          cp -a env/deploy_all_non_multistep_api/. ./;
+          
+      - name: Terraform Init
+        run: terraform init -backend-config=backend.auto.conf
+      
+      - name: Set default TF Plan Input value
+        id: defaulttfplan
+        run: |
+          TF_PLAN_Input=${{ github.event.inputs.tf_plan }}
+          echo "value=${TF_PLAN_Input:-"false"}" >> "$GITHUB_OUTPUT"
+
+      - name: Set default TF Apply Input value
+        id: defaulttfapply
+        run: |
+          TF_APPLY_Input=${{ github.event.inputs.tf_apply }}
+          echo "value=${TF_APPLY_Input:-"true"}" >> "$GITHUB_OUTPUT"
+      
+      - name: Terraform Plan
+        if: github.ref_name != 'develop' || steps.defaulttfplan.outputs.value == 'true'
+        run: terraform plan
+        
+      - name: Terraform Apply
+        if: steps.defaulttfapply.outputs.value == 'true'
+        run: |
+          if ${{github.ref_name == 'develop'}}
+          then
+            terraform apply -auto-approve
+          else
+            echo Terraform Apply can not be executed from a branch
+          fi
+
+
